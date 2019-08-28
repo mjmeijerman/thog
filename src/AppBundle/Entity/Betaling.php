@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -24,7 +25,7 @@ class Betaling
 
     /**
      * @ORM\Column(type="datetime")
-     * @var \DateTime $datumBetaald
+     * @var DateTime $datumBetaald
      */
     private $datumBetaald;
 
@@ -70,7 +71,7 @@ class Betaling
     /**
      * Set datumBetaald
      *
-     * @param \DateTime $datumBetaald
+     * @param DateTime $datumBetaald
      * @return Betaling
      */
     public function setDatumBetaald($datumBetaald)
@@ -83,7 +84,7 @@ class Betaling
     /**
      * Get datumBetaald
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getDatumBetaald()
     {
@@ -93,10 +94,11 @@ class Betaling
     /**
      * Set user
      *
-     * @param \AppBundle\Entity\User $user
+     * @param User $user
+     *
      * @return Betaling
      */
-    public function setUser(\AppBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -106,7 +108,7 @@ class Betaling
     /**
      * Get user
      *
-     * @return \AppBundle\Entity\User 
+     * @return User
      */
     public function getUser()
     {

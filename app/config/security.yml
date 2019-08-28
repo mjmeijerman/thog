@@ -27,15 +27,16 @@ security:
             form_login:
                 login_path: /login
                 check_path: /login_check
-                csrf_provider: security.csrf.token_manager
+                csrf_token_generator: security.csrf.token_manager
                 default_target_path: /pagina/Inloggen
             switch_user: true
+            logout_on_user_change: true
 
             logout:
                 path:   /logout
                 target: /pagina/Inloggen
 
             remember_me:
-                key:      "%secret%"
+                secret:   "%secret%"
                 lifetime: 2419200 # 4 weeks in seconds
                 path:     /

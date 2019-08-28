@@ -8,12 +8,11 @@ use AppBundle\Entity\Turnster;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Vereniging;
 use AppBundle\Entity\Voorinschrijving;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use DateTime;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Httpfoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 
 
@@ -64,7 +63,7 @@ class InschrijvingController extends BaseController
                                     } else {
                                         $turnster->setWachtlijst(true);
                                     }
-                                    $turnster->setCreationDate(new \DateTime('now'));
+                                    $turnster->setCreationDate(new DateTime('now'));
                                     $turnster->setExpirationDate(null);
                                     $turnster->setScores($scores);
                                     $turnster->setUser($user);
@@ -93,7 +92,10 @@ class InschrijvingController extends BaseController
                                 $jurylid->setPhoneNumber($request->request->get('jury_phone_number_' . $i));
                                 $jurylid->setBrevet($request->request->get('jury_brevet_' . $i));
                                 $jurylid->setOpmerking($request->request->get('jury_opmerking_' . $i));
-                                $this->setJurylidBeschikbareDagenFromPostData($request->request->get('jury_dag_' . $i), $jurylid);
+                                $this->setJurylidBeschikbareDagenFromPostData(
+                                    $request->request->get('jury_dag_' . $i),
+                                    $jurylid
+                                );
                                 $jurylid->setUser($user);
                                 $user->addJurylid($jurylid);
                                 $this->addToDB($user);
@@ -109,7 +111,13 @@ class InschrijvingController extends BaseController
                                         $user->getVereniging()->getPlaats(),
                                     'contactEmail'   => $user->getEmail(),
                                 ];
-                                $this->sendEmail($subject, $to, $view, $parameters, BaseController::TOURNAMENT_CONTACT_EMAIL);
+                                $this->sendEmail(
+                                    $subject,
+                                    $to,
+                                    $view,
+                                    $parameters,
+                                    BaseController::TOURNAMENT_CONTACT_EMAIL
+                                );
                             }
                         }
                     }
@@ -133,8 +141,8 @@ class InschrijvingController extends BaseController
                 } else {
                     $turnster->setWachtlijst(true);
                 }
-                $turnster->setCreationDate(new \DateTime('now'));
-                $turnster->setExpirationDate(new \DateTime('now + 2 minutes'));
+                $turnster->setCreationDate(new DateTime('now'));
+                $turnster->setExpirationDate(new DateTime('now + 2 minutes'));
                 $turnster->setScores($scores);
                 $turnster->setUser($user);
                 $user->addTurnster($turnster);
@@ -167,11 +175,11 @@ class InschrijvingController extends BaseController
         $juryleden = $user->getJurylid();
         foreach ($juryleden as $jurylid) {
             $opgeslagenJuryleden[] = [
-                'voornaam'   => $jurylid->getVoornaam(),
-                'achternaam' => $jurylid->getAchternaam(),
-                'email'      => $jurylid->getEmail(),
+                'voornaam'     => $jurylid->getVoornaam(),
+                'achternaam'   => $jurylid->getAchternaam(),
+                'email'        => $jurylid->getEmail(),
                 'phone_number' => $jurylid->getPhoneNumber(),
-                'brevet'     => $jurylid->getBrevet(),
+                'brevet'       => $jurylid->getBrevet(),
             ];
         }
         $tijdTot       = date('d-m-Y H:i', (time() + ($timeToExpiration) * 60));
@@ -198,8 +206,8 @@ class InschrijvingController extends BaseController
     }
 
     /**
-     * @Route("/inschrijven", name="inschrijven")
-     * @Method({"GET", "POST"})
+     * @Route("/inschrijven", name="inschrijven", methods={"GET", "POST"})
+     * @throws \Exception
      */
     public function inschrijvenPage(Request $request)
     {
@@ -461,7 +469,7 @@ class InschrijvingController extends BaseController
                                     ->findOneBy(
                                         array('token' => $request->query->get('token'))
                                     );
-                                $result->setUsedAt(new \DateTime('now'));
+                                $result->setUsedAt(new DateTime('now'));
                                 $this->addToDB($result);
                                 $session->set('token', $request->query->get('token'));
                             }
@@ -480,7 +488,7 @@ class InschrijvingController extends BaseController
                             );
                             $contactpersoon->setIsActive(true);
                             $contactpersoon->setTelefoonnummer($request->request->get('telefoonnummer'));
-                            $contactpersoon->setCreatedAt(new \DateTime('now'));
+                            $contactpersoon->setCreatedAt(new DateTime('now'));
                             $contactpersoon->setVereniging($vereniging);
                             for ($i = 0; $i < $request->request->get('aantalTurnsters'); $i++) {
                                 $turnster = new Turnster();
@@ -490,9 +498,9 @@ class InschrijvingController extends BaseController
                                 } else {
                                     $turnster->setWachtlijst(true);
                                 }
-                                $turnster->setCreationDate(new \DateTime('now'));
+                                $turnster->setCreationDate(new DateTime('now'));
                                 $turnster->setExpirationDate(
-                                    new \DateTime(
+                                    new DateTime(
                                         'now + ' . ($this->getMinutesToExpiration(
                                                 $request->request->get('aantalTurnsters')
                                             )
@@ -554,12 +562,11 @@ class InschrijvingController extends BaseController
     }
 
     /**
-     * @Route("/checkUsername/{username}/", name="checkUsernameAvailabilityAjaxCall", options={"expose"=true})
-     * @Method("GET")
+     * @Route("/checkUsername/{username}/", name="checkUsernameAvailabilityAjaxCall", options={"expose"=true}, methods={"GET"})
      */
     public function checkUsernameAvailabilityAjaxCall($username)
     {
-        return new Response($this->checkUsernameAvailability($username));
+        return new JsonResponse($this->checkUsernameAvailability($username));
     }
 
     private function checkUsernameAvailability($username)
@@ -582,8 +589,7 @@ class InschrijvingController extends BaseController
 
     /**
      * @Route("/getAvailableNiveausAjaxCall/{geboorteJaar}/", name="getAvailableNiveausAjaxCall",
-     * options={"expose"=true})
-     * @Method("GET")
+     * options={"expose"=true}, methods={"GET"})
      */
     public function getAvailableNiveausAjaxCall($geboorteJaar)
     {

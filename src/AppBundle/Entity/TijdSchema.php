@@ -52,9 +52,9 @@ class TijdSchema
     public function getAll()
     {
         $items = [
-            'id' => $this->id,
-            'naam' => $this->naam,
-            'locatie' => $this->locatie,
+            'id'        => $this->id,
+            'naam'      => $this->naam,
+            'locatie'   => $this->locatie,
             'createdAt' => $this->createdAt->format('d-m-Y H:i'),
         ];
         return $items;
@@ -64,21 +64,21 @@ class TijdSchema
     {
         return null === $this->locatie
             ? null
-            : $this->getUploadRootDir().'/'.$this->locatie;
+            : $this->getUploadRootDir() . '/' . $this->locatie;
     }
 
     public function getWebPath()
     {
         return null === $this->locatie
             ? null
-            : $this->getUploadDir().'/'.$this->locatie;
+            : $this->getUploadDir() . '/' . $this->locatie;
     }
 
     public function getUploadRootDir()
     {
         // the absolute directory path where uploaded
         // documents should be saved
-        return __DIR__.'/../../../web/'.$this->getUploadDir();
+        return __DIR__ . '/../../../web/' . $this->getUploadDir();
     }
 
     protected function getUploadDir()
@@ -102,13 +102,10 @@ class TijdSchema
      * Set naam
      *
      * @param string $naam
-     * @return FileUpload
      */
     public function setNaam($naam)
     {
         $this->naam = $naam;
-
-        return $this;
     }
 
     /**
@@ -125,13 +122,10 @@ class TijdSchema
      * Set locatie
      *
      * @param string $locatie
-     * @return FileUpload
      */
     public function setLocatie($locatie)
     {
         $this->locatie = $locatie;
-
-        return $this;
     }
 
     /**
@@ -153,7 +147,7 @@ class TijdSchema
     {
         $this->file = $file;
         if (isset($this->locatie)) {
-            $this->temp = $this->locatie;
+            $this->temp    = $this->locatie;
             $this->locatie = null;
         } else {
             $this->locatie = 'initial';
@@ -177,8 +171,8 @@ class TijdSchema
     public function preUpload()
     {
         if (null !== $this->getFile()) {
-            $filename = 'tijdSchema';
-            $this->locatie = $filename.'.'.$this->getFile()->getClientOriginalExtension();
+            $filename      = 'tijdSchema';
+            $this->locatie = $filename . '.' . $this->getFile()->getClientOriginalExtension();
         }
     }
 
@@ -193,7 +187,7 @@ class TijdSchema
         }
         $this->getFile()->move($this->getUploadRootDir(), $this->locatie);
         if (isset($this->temp)) {
-            unlink($this->getUploadRootDir().'/'.$this->temp);
+            unlink($this->getUploadRootDir() . '/' . $this->temp);
             $this->temp = null;
         }
         $this->file = null;
@@ -221,13 +215,10 @@ class TijdSchema
      * Set uploader
      *
      * @param string $uploader
-     * @return Reglementen
      */
     public function setUploader($uploader)
     {
         $this->uploader = $uploader;
-
-        return $this;
     }
 
     /**
@@ -244,13 +235,10 @@ class TijdSchema
      * Set createdAt
      *
      * @param \DateTime $createdAt
-     * @return Reglementen
      */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     /**

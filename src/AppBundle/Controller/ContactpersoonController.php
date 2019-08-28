@@ -3,33 +3,20 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Betaling;
-use AppBundle\Entity\FileUpload;
-use AppBundle\Entity\FotoUpload;
 use AppBundle\Entity\Jurylid;
-use AppBundle\Entity\Nieuwsbericht;
 use AppBundle\Entity\Scores;
 use AppBundle\Entity\ScoresRepository;
-use AppBundle\Entity\Sponsor;
 use AppBundle\Entity\Turnster;
 use AppBundle\Entity\TurnsterRepository;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Vloermuziek;
-use AppBundle\Form\Type\EditSponsorType;
-use AppBundle\Form\Type\NieuwsberichtType;
-use AppBundle\Form\Type\OrganisatieType;
-use AppBundle\Form\Type\SponsorType;
+use Exception;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Httpfoundation\Response;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use AppBundle\Entity\Content;
-use Symfony\Component\HttpFoundation\Session\Session;
-use Symfony\Component\HttpKernel\Exception;
-use AppBundle\Controller\BaseController;
-use AppBundle\Form\Type\ContentType;
-use Symfony\Component\Validator\Constraints\DateTime;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 
 /**
@@ -38,79 +25,78 @@ use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 class ContactpersoonController extends BaseController
 {
     /**
-     * @Route("/contactpersoon/", name="getContactpersoonIndexPage")
-     * @Method("GET")
+     * @Route("/contactpersoon/", name="getContactpersoonIndexPage", methods={"GET"})
      */
     public function getIndexPageAction()
     {
-        $indelingen = $this->getWedstrijdindelingen();
+        $indelingen                    = $this->getWedstrijdindelingen();
         $uploadenVloermuziekToegestaan = $this->uploadenVloermuziekToegestaan();
-        $wijzigenTurnsterToegestaan = $this->wijzigTurnsterToegestaan();
+        $wijzigenTurnsterToegestaan    = $this->wijzigTurnsterToegestaan();
         $verwijderenTurnsterToegestaan = $this->verwijderenTurnsterToegestaan();
-        $wijzigJuryToegestaan = $this->wijzigJuryToegestaan();
-        $verwijderJuryToegestaan = $this->wijzigJuryToegestaan();
-        $factuurBekijkenToegestaan = $this->factuurBekijkenToegestaan();
+        $wijzigJuryToegestaan          = $this->wijzigJuryToegestaan();
+        $verwijderJuryToegestaan       = $this->wijzigJuryToegestaan();
+        $factuurBekijkenToegestaan     = $this->factuurBekijkenToegestaan();
         $this->updateGereserveerdePlekken();
         $this->setBasicPageData();
         /** @var User $user */
-        $user = $this->getUser();
+        $user          = $this->getUser();
         $contactgevens = [
-            'vereniging' => $user->getVereniging()->getNaam() . ', ' . $user->getVereniging()->getPlaats(),
+            'vereniging'     => $user->getVereniging()->getNaam() . ', ' . $user->getVereniging()->getPlaats(),
             'gebruikersnaam' => $user->getUsername(),
-            'voornaam' => $user->getVoornaam(),
-            'achternaam' => $user->getAchternaam(),
-            'email' => $user->getEmail(),
-            'telNr' => $user->getTelefoonnummer(),
+            'voornaam'       => $user->getVoornaam(),
+            'achternaam'     => $user->getAchternaam(),
+            'email'          => $user->getEmail(),
+            'telNr'          => $user->getTelefoonnummer(),
         ];
-        $turnsters = [];
-        $wachtlijst = [];
-        $afgemeld = [];
+        $turnsters     = [];
+        $wachtlijst    = [];
+        $afgemeld      = [];
         /** @var Turnster[] $turnsterObjecten */
         $turnsterObjecten = $user->getTurnster();
         foreach ($turnsterObjecten as $turnsterObject) {
             if ($turnsterObject->getVloermuziek()) {
                 $vloermuziek = true;
-                $locatie = $turnsterObject->getVloermuziek()->getWebPath();
+                $locatie     = $turnsterObject->getVloermuziek()->getWebPath();
             } else {
                 $vloermuziek = false;
-                $locatie = '';
+                $locatie     = '';
             }
             if ($turnsterObject->getAfgemeld()) {
                 $afgemeld[] = [
-                    'id' => $turnsterObject->getId(),
-                    'voornaam' => $turnsterObject->getVoornaam(),
-                    'achternaam' => $turnsterObject->getAchternaam(),
+                    'id'           => $turnsterObject->getId(),
+                    'voornaam'     => $turnsterObject->getVoornaam(),
+                    'achternaam'   => $turnsterObject->getAchternaam(),
                     'geboorteJaar' => $turnsterObject->getGeboortejaar(),
-                    'categorie' => $this->getCategorie($turnsterObject->getGeboortejaar()),
-                    'niveau' => $turnsterObject->getNiveau(),
-                    'opmerking' => $turnsterObject->getOpmerking(),
+                    'categorie'    => $this->getCategorie($turnsterObject->getGeboortejaar()),
+                    'niveau'       => $turnsterObject->getNiveau(),
+                    'opmerking'    => $turnsterObject->getOpmerking(),
                 ];
             } elseif ($turnsterObject->getWachtlijst()) {
                 $wachtlijst[] = [
-                    'id' => $turnsterObject->getId(),
-                    'voornaam' => $turnsterObject->getVoornaam(),
-                    'achternaam' => $turnsterObject->getAchternaam(),
+                    'id'           => $turnsterObject->getId(),
+                    'voornaam'     => $turnsterObject->getVoornaam(),
+                    'achternaam'   => $turnsterObject->getAchternaam(),
                     'geboorteJaar' => $turnsterObject->getGeboortejaar(),
-                    'categorie' => $this->getCategorie($turnsterObject->getGeboortejaar()),
-                    'niveau' => $turnsterObject->getNiveau(),
-                    'opmerking' => $turnsterObject->getOpmerking(),
+                    'categorie'    => $this->getCategorie($turnsterObject->getGeboortejaar()),
+                    'niveau'       => $turnsterObject->getNiveau(),
+                    'opmerking'    => $turnsterObject->getOpmerking(),
                 ];
             } else {
                 $turnsters[] = [
-                    'id' => $turnsterObject->getId(),
-                    'voornaam' => $turnsterObject->getVoornaam(),
-                    'achternaam' => $turnsterObject->getAchternaam(),
-                    'geboorteJaar' => $turnsterObject->getGeboortejaar(),
-                    'categorie' => $this->getCategorie($turnsterObject->getGeboortejaar()),
-                    'niveau' => $turnsterObject->getNiveau(),
-                    'wedstrijdnummer' => $turnsterObject->getScores()->getWedstrijdnummer(),
-                    'vloermuziek' => $vloermuziek,
-                    'opmerking' => $turnsterObject->getOpmerking(),
-                    'keuze' => $this->isKeuzeOefenstof($turnsterObject->getGeboortejaar()),
-                    'wedstrijddag' => $turnsterObject->getScores()->getWedstrijddag(),
-                    'baan' => $turnsterObject->getScores()->getBaan(),
-                    'wedstrijdronde' => $turnsterObject->getScores()->getWedstrijdronde(),
-                    'groep' => $turnsterObject->getScores()->getGroep(),
+                    'id'                 => $turnsterObject->getId(),
+                    'voornaam'           => $turnsterObject->getVoornaam(),
+                    'achternaam'         => $turnsterObject->getAchternaam(),
+                    'geboorteJaar'       => $turnsterObject->getGeboortejaar(),
+                    'categorie'          => $this->getCategorie($turnsterObject->getGeboortejaar()),
+                    'niveau'             => $turnsterObject->getNiveau(),
+                    'wedstrijdnummer'    => $turnsterObject->getScores()->getWedstrijdnummer(),
+                    'vloermuziek'        => $vloermuziek,
+                    'opmerking'          => $turnsterObject->getOpmerking(),
+                    'keuze'              => $this->isKeuzeOefenstof($turnsterObject->getGeboortejaar()),
+                    'wedstrijddag'       => $turnsterObject->getScores()->getWedstrijddag(),
+                    'baan'               => $turnsterObject->getScores()->getBaan(),
+                    'wedstrijdronde'     => $turnsterObject->getScores()->getWedstrijdronde(),
+                    'groep'              => $turnsterObject->getScores()->getGroep(),
                     'vloermuziekLocatie' => $locatie,
                 ];
             }
@@ -120,75 +106,80 @@ class ContactpersoonController extends BaseController
         $juryObjecten = $user->getJurylid();
         foreach ($juryObjecten as $juryObject) {
             $juryleden[] = [
-                'id' => $juryObject->getId(),
-                'voornaam' => $juryObject->getVoornaam(),
+                'id'         => $juryObject->getId(),
+                'voornaam'   => $juryObject->getVoornaam(),
                 'achternaam' => $juryObject->getAchternaam(),
-                'opmerking' => $juryObject->getOpmerking(),
-                'brevet' => $juryObject->getBrevet(),
-                'dag' => $this->getBeschikbareDag($juryObject),
+                'opmerking'  => $juryObject->getOpmerking(),
+                'brevet'     => $juryObject->getBrevet(),
+                'dag'        => $this->getBeschikbareDag($juryObject),
             ];
         }
-        $teLeverenJuryleden = ceil(count($turnsters)/10);
+        $teLeverenJuryleden = ceil(count($turnsters) / 10);
         if (($juryBoete = $teLeverenJuryleden - count($juryleden)) < 0) {
             $juryBoete = 0;
         }
         $teBetalenBedrag = (count($turnsters) + count($afgemeld)) * 15 + $juryBoete * 35;
         /** @var Betaling[] $betalingen */
-        $betalingen = $user->getBetaling();
+        $betalingen    = $user->getBetaling();
         $betaaldBedrag = 0;
         if (count($betalingen) == 0) {
             $factuurId = 'factuur';
         } else {
             foreach ($betalingen as $betaling) {
                 $betaaldBedrag += $betaling->getBedrag();
-            } if ($betaaldBedrag < $teBetalenBedrag) {
+            }
+            if ($betaaldBedrag < $teBetalenBedrag) {
                 $factuurId = 'factuur_deel';
             } else {
                 $factuurId = 'factuur_voldaan';
             }
         }
-        return $this->render('contactpersoon/contactpersoonIndex.html.twig', array(
-            'menuItems' => $this->menuItems,
-            'sponsors' => $this->sponsors,
-            'contactgegevens' => $contactgevens,
-            'turnsters' => $turnsters,
-            'wachtlijstTurnsters' => $wachtlijst,
-            'afgemeldTurnsters' => $afgemeld,
-            'juryleden' => $juryleden,
-            'wijzigenTurnsterToegestaan' => $wijzigenTurnsterToegestaan,
-            'verwijderenTurnsterToegestaan' => $verwijderenTurnsterToegestaan,
-            'wijzigJuryToegestaan' => $wijzigJuryToegestaan,
-            'verwijderJuryToegestaan' => $verwijderJuryToegestaan,
-            'uploadenVloermuziekToegestaan' => $uploadenVloermuziekToegestaan,
-            'factuurBekijkenToegestaan' => $factuurBekijkenToegestaan,
-            'factuurId' => $factuurId,
-            'banen' => $indelingen['banen'],
-            'dagen' => $indelingen['dagen'],
-            'wedstrijdrondes' => $indelingen['wedstrijdrondes'],
-            'categorieNiveau' => $indelingen['categorieNiveau'],
-        ));
+        return $this->render(
+            'contactpersoon/contactpersoonIndex.html.twig',
+            array(
+                'menuItems'                     => $this->menuItems,
+                'sponsors'                      => $this->sponsors,
+                'contactgegevens'               => $contactgevens,
+                'turnsters'                     => $turnsters,
+                'wachtlijstTurnsters'           => $wachtlijst,
+                'afgemeldTurnsters'             => $afgemeld,
+                'juryleden'                     => $juryleden,
+                'wijzigenTurnsterToegestaan'    => $wijzigenTurnsterToegestaan,
+                'verwijderenTurnsterToegestaan' => $verwijderenTurnsterToegestaan,
+                'wijzigJuryToegestaan'          => $wijzigJuryToegestaan,
+                'verwijderJuryToegestaan'       => $verwijderJuryToegestaan,
+                'uploadenVloermuziekToegestaan' => $uploadenVloermuziekToegestaan,
+                'factuurBekijkenToegestaan'     => $factuurBekijkenToegestaan,
+                'factuurId'                     => $factuurId,
+                'banen'                         => $indelingen['banen'],
+                'dagen'                         => $indelingen['dagen'],
+                'wedstrijdrondes'               => $indelingen['wedstrijdrondes'],
+                'categorieNiveau'               => $indelingen['categorieNiveau'],
+            )
+        );
     }
 
     /**
-     * @Route("/contactpersoon/uitslagen/", name="contactpersoonUitslagen")
-     * @Method({"GET"})
+     * @Route("/contactpersoon/uitslagen/", name="contactpersoonUitslagen", methods={"GET"})
      */
     public function contactpersoonUitslagen()
     {
         /** @var TurnsterRepository $repo */
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Turnster');
+        $repo    = $this->getDoctrine()->getRepository('AppBundle:Turnster');
         $catNivs = $repo->getDistinctCatNiv($this->getUser()->getId());
-        $pdf = new UitslagenPdfController('L', 'mm', 'A4');
+        $pdf     = new UitslagenPdfController('L', 'mm', 'A4');
         foreach ($catNivs as $catNiv) {
             $check = $this->getDoctrine()->getRepository('AppBundle:ToegestaneNiveaus')
-                ->findOneBy([
-                    'categorie' => $catNiv['categorie'],
-                    'niveau' => $catNiv['niveau'],
-                    'uitslagGepubliceerd' => 1,
-                ]);
+                ->findOneBy(
+                    [
+                        'categorie'           => $catNiv['categorie'],
+                        'niveau'              => $catNiv['niveau'],
+                        'uitslagGepubliceerd' => 1,
+                    ]
+                );
             if ($check) {
                 /** @var Turnster[] $results */
-                $results = $this->getDoctrine()->getRepository("AppBundle:Turnster")
+                $results   = $this->getDoctrine()->getRepository("AppBundle:Turnster")
                     ->getIngeschrevenTurnstersCatNiveau($catNiv['categorie'], $catNiv['niveau']);
                 $turnsters = [];
                 foreach ($results as $result) {
@@ -203,63 +194,65 @@ class ContactpersoonController extends BaseController
                 $pdf->Table($turnsters, $this->getUser()->getId());
             }
         }
-        return new Response($pdf->Output(
-            'Uitslagen ' . $this->getUser()->getVereniging()->getNaam() . ' ' . $this->getUser()->getVereniging()
-                ->getPlaats() . ' ' . BaseController::TOURNAMENT_SHORT_NAME . ' ' . self::DATE_TOURNAMENT . ".pdf", "I"
-        ), 200, [
-            'Content-Type' => 'application/pdf'
-        ]);
+        return new BinaryFileResponse(
+            $pdf->Output(
+                'Uitslagen ' . $this->getUser()->getVereniging()->getNaam() . ' ' . $this->getUser()->getVereniging()
+                    ->getPlaats() . ' ' . BaseController::TOURNAMENT_SHORT_NAME . ' ' . self::DATE_TOURNAMENT . ".pdf",
+                "I"
+            ), 200, [
+                'Content-Type' => 'application/pdf'
+            ]
+        );
     }
 
     /**
-     * @Route("/contactpersoon/addTurnster/", name="addTurnster")
-     * @Method({"GET", "POST"})
+     * @Route("/contactpersoon/addTurnster/", name="addTurnster", methods={"GET", "POST"})
      */
     public function addTurnster(Request $request)
     {
         if ($this->wijzigTurnsterToegestaan()) {
             $this->setBasicPageData();
-            $turnster = [
-                'voornaam' => '',
-                'achternaam' => '',
+            $turnster      = [
+                'voornaam'     => '',
+                'achternaam'   => '',
                 'geboortejaar' => '',
-                'niveau' => '',
-                'opmerking' => '',
+                'niveau'       => '',
+                'opmerking'    => '',
             ];
-            $classNames = [
-                'voornaam' => 'text',
-                'achternaam' => 'text',
+            $classNames    = [
+                'voornaam'     => 'text',
+                'achternaam'   => 'text',
                 'geboortejaar' => 'turnster_niveau',
-                'niveau' => 'turnster_niveau',
-                'opmerking' => 'text',
+                'niveau'       => 'turnster_niveau',
+                'opmerking'    => 'text',
             ];
             $geboorteJaren = $this->getGeboorteJaren();
-            $vrijePlekken = $this->getVrijePlekken();
-            $csrfToken = $this->getToken();
+            $vrijePlekken  = $this->getVrijePlekken();
+            $csrfToken     = $this->getToken();
             if ($request->getMethod() == 'POST') {
-                $turnster = [
-                    'voornaam' => $request->request->get('voornaam'),
-                    'achternaam' => $request->request->get('achternaam'),
+                $turnster    = [
+                    'voornaam'     => $request->request->get('voornaam'),
+                    'achternaam'   => $request->request->get('achternaam'),
                     'geboortejaar' => $request->request->get('geboorteJaar'),
-                    'niveau' => $request->request->get('niveau'),
-                    'opmerking' => $request->request->get('opmerking'),
+                    'niveau'       => $request->request->get('niveau'),
+                    'opmerking'    => $request->request->get('opmerking'),
                 ];
                 $postedToken = $request->request->get('csrfToken');
                 if (!empty($postedToken)) {
                     if ($this->isTokenValid($postedToken)) {
                         $validationTurnster = [
-                            'voornaam' => false,
-                            'achternaam' => false,
+                            'voornaam'     => false,
+                            'achternaam'   => false,
                             'geboorteJaar' => false,
-                            'niveau' => false,
-                            'opmerking' => true,
+                            'niveau'       => false,
+                            'opmerking'    => true,
                         ];
 
                         $classNames['opmerking'] = 'succesIngevuld';
 
                         if (strlen($request->request->get('voornaam')) > 1) {
                             $validationTurnster['voornaam'] = true;
-                            $classNames['voornaam'] = 'succesIngevuld';
+                            $classNames['voornaam']         = 'succesIngevuld';
                         } else {
                             $this->addFlash(
                                 'error',
@@ -270,7 +263,7 @@ class ContactpersoonController extends BaseController
 
                         if (strlen($request->request->get('achternaam')) > 1) {
                             $validationTurnster['achternaam'] = true;
-                            $classNames['achternaam'] = 'succesIngevuld';
+                            $classNames['achternaam']         = 'succesIngevuld';
                         } else {
                             $this->addFlash(
                                 'error',
@@ -280,7 +273,7 @@ class ContactpersoonController extends BaseController
                         }
                         if ($request->request->get('geboorteJaar')) {
                             $validationTurnster['geboorteJaar'] = true;
-                            $classNames['geboortejaar'] = 'succesIngevuld';
+                            $classNames['geboortejaar']         = 'succesIngevuld';
                         } else {
                             $this->addFlash(
                                 'error',
@@ -291,7 +284,7 @@ class ContactpersoonController extends BaseController
 
                         if ($request->request->get('niveau')) {
                             $validationTurnster['niveau'] = true;
-                            $classNames['niveau'] = 'succesIngevuld';
+                            $classNames['niveau']         = 'succesIngevuld';
                         } else {
                             $this->addFlash(
                                 'error',
@@ -301,7 +294,7 @@ class ContactpersoonController extends BaseController
                         }
                         if (!(in_array(false, $validationTurnster))) {
                             $turnster = new Turnster();
-                            $scores = new Scores();
+                            $scores   = new Scores();
                             if ($this->getVrijePlekken() > 0) {
                                 $turnster->setWachtlijst(false);
                             } else {
@@ -329,15 +322,18 @@ class ContactpersoonController extends BaseController
                     }
                 }
             }
-            return $this->render('contactpersoon/addTurnster.html.twig', array(
-                'menuItems' => $this->menuItems,
-                'sponsors' => $this->sponsors,
-                'vrijePlekken' => $vrijePlekken,
-                'turnster' => $turnster,
-                'geboorteJaren' => $geboorteJaren,
-                'classNames' => $classNames,
-                'csrfToken' => $csrfToken,
-            ));
+            return $this->render(
+                'contactpersoon/addTurnster.html.twig',
+                array(
+                    'menuItems'     => $this->menuItems,
+                    'sponsors'      => $this->sponsors,
+                    'vrijePlekken'  => $vrijePlekken,
+                    'turnster'      => $turnster,
+                    'geboorteJaren' => $geboorteJaren,
+                    'classNames'    => $classNames,
+                    'csrfToken'     => $csrfToken,
+                )
+            );
         } else {
             $this->addFlash(
                 'error',
@@ -348,8 +344,7 @@ class ContactpersoonController extends BaseController
     }
 
     /**
-     * @Route("/contactpersoon/editTurnster/{turnsterId}/", name="editTurnster")
-     * @Method({"GET", "POST"})
+     * @Route("/contactpersoon/editTurnster/{turnsterId}/", name="editTurnster", methods={"GET", "POST"})
      */
     public function editTurnster(Request $request, $turnsterId)
     {
@@ -371,46 +366,46 @@ class ContactpersoonController extends BaseController
                 );
                 return $this->redirectToRoute('getContactpersoonIndexPage');
             } else {
-                $turnster = [
-                    'voornaam' => $result->getVoornaam(),
-                    'achternaam' => $result->getAchternaam(),
+                $turnster      = [
+                    'voornaam'     => $result->getVoornaam(),
+                    'achternaam'   => $result->getAchternaam(),
                     'geboortejaar' => $result->getGeboortejaar(),
-                    'niveau' => $result->getNiveau(),
-                    'opmerking' => $result->getOpmerking(),
+                    'niveau'       => $result->getNiveau(),
+                    'opmerking'    => $result->getOpmerking(),
                 ];
-                $classNames = [
-                    'voornaam' => 'text',
-                    'achternaam' => 'text',
+                $classNames    = [
+                    'voornaam'     => 'text',
+                    'achternaam'   => 'text',
                     'geboortejaar' => 'turnster_niveau',
-                    'niveau' => 'turnster_niveau',
-                    'opmerking' => 'text',
+                    'niveau'       => 'turnster_niveau',
+                    'opmerking'    => 'text',
                 ];
                 $geboorteJaren = $this->getGeboorteJaren();
-                $csrfToken = $this->getToken();
+                $csrfToken     = $this->getToken();
                 if ($request->getMethod() == 'POST') {
-                    $turnster = [
-                        'voornaam' => $request->request->get('voornaam'),
-                        'achternaam' => $request->request->get('achternaam'),
+                    $turnster    = [
+                        'voornaam'     => $request->request->get('voornaam'),
+                        'achternaam'   => $request->request->get('achternaam'),
                         'geboortejaar' => $request->request->get('geboorteJaar'),
-                        'niveau' => $request->request->get('niveau'),
-                        'opmerking' => $request->request->get('opmerking'),
+                        'niveau'       => $request->request->get('niveau'),
+                        'opmerking'    => $request->request->get('opmerking'),
                     ];
                     $postedToken = $request->request->get('csrfToken');
                     if (!empty($postedToken)) {
                         if ($this->isTokenValid($postedToken)) {
                             $validationTurnster = [
-                                'voornaam' => false,
-                                'achternaam' => false,
+                                'voornaam'     => false,
+                                'achternaam'   => false,
                                 'geboorteJaar' => false,
-                                'niveau' => false,
-                                'opmerking' => true,
+                                'niveau'       => false,
+                                'opmerking'    => true,
                             ];
 
                             $classNames['opmerking'] = 'succesIngevuld';
 
                             if (strlen($request->request->get('voornaam')) > 1) {
                                 $validationTurnster['voornaam'] = true;
-                                $classNames['voornaam'] = 'succesIngevuld';
+                                $classNames['voornaam']         = 'succesIngevuld';
                             } else {
                                 $this->addFlash(
                                     'error',
@@ -421,7 +416,7 @@ class ContactpersoonController extends BaseController
 
                             if (strlen($request->request->get('achternaam')) > 1) {
                                 $validationTurnster['achternaam'] = true;
-                                $classNames['achternaam'] = 'succesIngevuld';
+                                $classNames['achternaam']         = 'succesIngevuld';
                             } else {
                                 $this->addFlash(
                                     'error',
@@ -431,7 +426,7 @@ class ContactpersoonController extends BaseController
                             }
                             if ($request->request->get('geboorteJaar')) {
                                 $validationTurnster['geboorteJaar'] = true;
-                                $classNames['geboortejaar'] = 'succesIngevuld';
+                                $classNames['geboortejaar']         = 'succesIngevuld';
                             } else {
                                 $this->addFlash(
                                     'error',
@@ -442,7 +437,7 @@ class ContactpersoonController extends BaseController
 
                             if ($request->request->get('niveau')) {
                                 $validationTurnster['niveau'] = true;
-                                $classNames['niveau'] = 'succesIngevuld';
+                                $classNames['niveau']         = 'succesIngevuld';
                             } else {
                                 $this->addFlash(
                                     'error',
@@ -468,14 +463,17 @@ class ContactpersoonController extends BaseController
                         }
                     }
                 }
-                return $this->render('contactpersoon/editTurnster.html.twig', array(
-                    'menuItems' => $this->menuItems,
-                    'sponsors' => $this->sponsors,
-                    'turnster' => $turnster,
-                    'geboorteJaren' => $geboorteJaren,
-                    'classNames' => $classNames,
-                    'csrfToken' => $csrfToken,
-                ));
+                return $this->render(
+                    'contactpersoon/editTurnster.html.twig',
+                    array(
+                        'menuItems'     => $this->menuItems,
+                        'sponsors'      => $this->sponsors,
+                        'turnster'      => $turnster,
+                        'geboorteJaren' => $geboorteJaren,
+                        'classNames'    => $classNames,
+                        'csrfToken'     => $csrfToken,
+                    )
+                );
             }
         } else {
             $this->addFlash(
@@ -487,8 +485,7 @@ class ContactpersoonController extends BaseController
     }
 
     /**
-     * @Route("/contactpersoon/removeTurnster/", name="removeTurnster")
-     * @Method({"POST"})
+     * @Route("/contactpersoon/removeTurnster/", name="removeTurnster", methods={"POST"})
      */
     public function removeTurnster(Request $request)
     {
@@ -524,60 +521,59 @@ class ContactpersoonController extends BaseController
     }
 
     /**
-     * @Route("/contactpersoon/addJury/", name="addJury")
-     * @Method({"GET", "POST"})
+     * @Route("/contactpersoon/addJury/", name="addJury", methods={"GET", "POST"})
      */
     public function addJury(Request $request)
     {
         if ($this->wijzigJuryToegestaan()) {
             $this->setBasicPageData();
-            $jury = [
-                'voornaam' => '',
-                'achternaam' => '',
-                'email' => '',
+            $jury       = [
+                'voornaam'     => '',
+                'achternaam'   => '',
+                'email'        => '',
                 'phone_number' => '',
-                'brevet' => '',
-                'opmerking' => '',
-                'dag' => '',
+                'brevet'       => '',
+                'opmerking'    => '',
+                'dag'          => '',
             ];
             $classNames = [
-                'voornaam' => 'text',
-                'achternaam' => 'text',
-                'email' => 'text',
+                'voornaam'     => 'text',
+                'achternaam'   => 'text',
+                'email'        => 'text',
                 'phone_number' => 'text',
-                'brevet' => 'turnster_niveau',
-                'opmerking' => 'text',
-                'dag' => 'turnster_niveau',
+                'brevet'       => 'turnster_niveau',
+                'opmerking'    => 'text',
+                'dag'          => 'turnster_niveau',
             ];
-            $csrfToken = $this->getToken();
+            $csrfToken  = $this->getToken();
             if ($request->getMethod() == 'POST') {
-                $jury = [
-                    'voornaam' => $request->request->get('voornaam'),
-                    'achternaam' => $request->request->get('achternaam'),
-                    'email' => $request->request->get('email'),
+                $jury        = [
+                    'voornaam'     => $request->request->get('voornaam'),
+                    'achternaam'   => $request->request->get('achternaam'),
+                    'email'        => $request->request->get('email'),
                     'phone_number' => $request->request->get('phone_number'),
-                    'brevet' => $request->request->get('brevet'),
-                    'dag' => $request->request->get('dag'),
-                    'opmerking' => $request->request->get('opmerking'),
+                    'brevet'       => $request->request->get('brevet'),
+                    'dag'          => $request->request->get('dag'),
+                    'opmerking'    => $request->request->get('opmerking'),
                 ];
                 $postedToken = $request->request->get('csrfToken');
                 if (!empty($postedToken)) {
                     if ($this->isTokenValid($postedToken)) {
                         $validationJury = [
-                            'voornaam' => false,
-                            'achternaam' => false,
-                            'email' => false,
+                            'voornaam'     => false,
+                            'achternaam'   => false,
+                            'email'        => false,
                             'phone_number' => false,
-                            'brevet' => false,
-                            'dag' => false,
-                            'opmerking' => true,
+                            'brevet'       => false,
+                            'dag'          => false,
+                            'opmerking'    => true,
                         ];
 
                         $classNames['opmerking'] = 'succesIngevuld';
 
                         if (strlen($request->request->get('voornaam')) > 1) {
                             $validationJury['voornaam'] = true;
-                            $classNames['voornaam'] = 'succesIngevuld';
+                            $classNames['voornaam']     = 'succesIngevuld';
                         } else {
                             $this->addFlash(
                                 'error',
@@ -588,7 +584,7 @@ class ContactpersoonController extends BaseController
 
                         if (strlen($request->request->get('achternaam')) > 1) {
                             $validationJury['achternaam'] = true;
-                            $classNames['achternaam'] = 'succesIngevuld';
+                            $classNames['achternaam']     = 'succesIngevuld';
                         } else {
                             $this->addFlash(
                                 'error',
@@ -599,13 +595,13 @@ class ContactpersoonController extends BaseController
 
                         if (strlen($request->request->get('email')) > 1) {
                             $emailConstraint = new EmailConstraint();
-                            $errors = $this->get('validator')->validate(
+                            $errors          = $this->get('validator')->validate(
                                 $request->request->get('email'),
                                 $emailConstraint
                             );
                             if (count($errors) == 0) {
                                 $validationJury['email'] = true;
-                                $classNames['email'] = 'succesIngevuld';
+                                $classNames['email']     = 'succesIngevuld';
                             } else {
                                 foreach ($errors as $error) {
                                     $this->addFlash(
@@ -630,7 +626,7 @@ class ContactpersoonController extends BaseController
                             ) && strlen($request->request->get('phone_number')) == 10
                         ) {
                             $validationJury['phone_number'] = true;
-                            $classNames['phone_number'] = 'succesIngevuld';
+                            $classNames['phone_number']     = 'succesIngevuld';
                         } else {
                             $this->addFlash(
                                 'error',
@@ -641,7 +637,7 @@ class ContactpersoonController extends BaseController
 
                         if ($request->request->get('brevet')) {
                             $validationJury['brevet'] = true;
-                            $classNames['brevet'] = 'brevet';
+                            $classNames['brevet']     = 'brevet';
                         } else {
                             $this->addFlash(
                                 'error',
@@ -652,7 +648,7 @@ class ContactpersoonController extends BaseController
 
                         if ($request->request->get('dag')) {
                             $validationJury['dag'] = true;
-                            $classNames['dag'] = 'succesIngevuld';
+                            $classNames['dag']     = 'succesIngevuld';
                         } else {
                             $this->addFlash(
                                 'error',
@@ -678,7 +674,7 @@ class ContactpersoonController extends BaseController
                             );
 
                             /** @var User $user */
-                            $user = $this->getUser();
+                            $user       = $this->getUser();
                             $subject    = 'Aanmelding ' . BaseController::TOURNAMENT_FULL_NAME;
                             $to         = $jurylid->getEmail();
                             $view       = 'mails/inschrijven_jurylid.txt.twig';
@@ -697,13 +693,16 @@ class ContactpersoonController extends BaseController
                     }
                 }
             }
-            return $this->render('contactpersoon/addJury.html.twig', array(
-                'menuItems' => $this->menuItems,
-                'sponsors' => $this->sponsors,
-                'jury' => $jury,
-                'classNames' => $classNames,
-                'csrfToken' => $csrfToken,
-            ));
+            return $this->render(
+                'contactpersoon/addJury.html.twig',
+                array(
+                    'menuItems'  => $this->menuItems,
+                    'sponsors'   => $this->sponsors,
+                    'jury'       => $jury,
+                    'classNames' => $classNames,
+                    'csrfToken'  => $csrfToken,
+                )
+            );
         } else {
             $this->addFlash(
                 'error',
@@ -714,8 +713,7 @@ class ContactpersoonController extends BaseController
     }
 
     /**
-     * @Route("/contactpersoon/editJury/{juryId}/", name="editJury")
-     * @Method({"GET", "POST"})
+     * @Route("/contactpersoon/editJury/{juryId}/", name="editJury", methods={"GET", "POST"})
      */
     public function editJury(Request $request, $juryId)
     {
@@ -737,53 +735,53 @@ class ContactpersoonController extends BaseController
                 );
                 return $this->redirectToRoute('getContactpersoonIndexPage');
             } else {
-                $jury = [
-                    'voornaam' => $result->getVoornaam(),
-                    'achternaam' => $result->getAchternaam(),
-                    'email' => $result->getEmail(),
+                $jury       = [
+                    'voornaam'     => $result->getVoornaam(),
+                    'achternaam'   => $result->getAchternaam(),
+                    'email'        => $result->getEmail(),
                     'phone_number' => $result->getPhoneNumber(),
-                    'brevet' => $result->getBrevet(),
-                    'opmerking' => $result->getOpmerking(),
-                    'dag' => $this->getBeschikbareDag($result),
+                    'brevet'       => $result->getBrevet(),
+                    'opmerking'    => $result->getOpmerking(),
+                    'dag'          => $this->getBeschikbareDag($result),
                 ];
                 $classNames = [
-                    'voornaam' => 'text',
-                    'achternaam' => 'text',
-                    'email' => 'text',
+                    'voornaam'     => 'text',
+                    'achternaam'   => 'text',
+                    'email'        => 'text',
                     'phone_number' => 'text',
-                    'brevet' => 'turnster_niveau',
-                    'opmerking' => 'text',
-                    'dag' => 'turnster_niveau',
+                    'brevet'       => 'turnster_niveau',
+                    'opmerking'    => 'text',
+                    'dag'          => 'turnster_niveau',
                 ];
-                $csrfToken = $this->getToken();
+                $csrfToken  = $this->getToken();
                 if ($request->getMethod() == 'POST') {
-                    $jury = [
-                        'voornaam' => $request->request->get('voornaam'),
-                        'achternaam' => $request->request->get('achternaam'),
-                        'email' => $request->request->get('email'),
+                    $jury        = [
+                        'voornaam'     => $request->request->get('voornaam'),
+                        'achternaam'   => $request->request->get('achternaam'),
+                        'email'        => $request->request->get('email'),
                         'phone_number' => $request->request->get('phone_number'),
-                        'brevet' => $request->request->get('brevet'),
-                        'dag' => $request->request->get('dag'),
-                        'opmerking' => $request->request->get('opmerking'),
+                        'brevet'       => $request->request->get('brevet'),
+                        'dag'          => $request->request->get('dag'),
+                        'opmerking'    => $request->request->get('opmerking'),
                     ];
                     $postedToken = $request->request->get('csrfToken');
                     if (!empty($postedToken)) {
                         if ($this->isTokenValid($postedToken)) {
                             $validationJury = [
-                                'voornaam' => false,
-                                'achternaam' => false,
-                                'email' => false,
+                                'voornaam'     => false,
+                                'achternaam'   => false,
+                                'email'        => false,
                                 'phone_number' => false,
-                                'brevet' => false,
-                                'dag' => false,
-                                'opmerking' => true,
+                                'brevet'       => false,
+                                'dag'          => false,
+                                'opmerking'    => true,
                             ];
 
                             $classNames['opmerking'] = 'succesIngevuld';
 
                             if (strlen($request->request->get('voornaam')) > 1) {
                                 $validationJury['voornaam'] = true;
-                                $classNames['voornaam'] = 'succesIngevuld';
+                                $classNames['voornaam']     = 'succesIngevuld';
                             } else {
                                 $this->addFlash(
                                     'error',
@@ -794,7 +792,7 @@ class ContactpersoonController extends BaseController
 
                             if (strlen($request->request->get('achternaam')) > 1) {
                                 $validationJury['achternaam'] = true;
-                                $classNames['achternaam'] = 'succesIngevuld';
+                                $classNames['achternaam']     = 'succesIngevuld';
                             } else {
                                 $this->addFlash(
                                     'error',
@@ -805,13 +803,13 @@ class ContactpersoonController extends BaseController
 
                             if (strlen($request->request->get('email')) > 1) {
                                 $emailConstraint = new EmailConstraint();
-                                $errors = $this->get('validator')->validate(
+                                $errors          = $this->get('validator')->validate(
                                     $request->request->get('email'),
                                     $emailConstraint
                                 );
                                 if (count($errors) == 0) {
                                     $validationJury['email'] = true;
-                                    $classNames['email'] = 'succesIngevuld';
+                                    $classNames['email']     = 'succesIngevuld';
                                 } else {
                                     foreach ($errors as $error) {
                                         $this->addFlash(
@@ -836,7 +834,7 @@ class ContactpersoonController extends BaseController
                                 ) && strlen($request->request->get('phone_number')) == 10
                             ) {
                                 $validationJury['phone_number'] = true;
-                                $classNames['phone_number'] = 'succesIngevuld';
+                                $classNames['phone_number']     = 'succesIngevuld';
                             } else {
                                 $this->addFlash(
                                     'error',
@@ -847,7 +845,7 @@ class ContactpersoonController extends BaseController
 
                             if ($request->request->get('brevet')) {
                                 $validationJury['brevet'] = true;
-                                $classNames['brevet'] = 'succesIngevuld';
+                                $classNames['brevet']     = 'succesIngevuld';
                             } else {
                                 $this->addFlash(
                                     'error',
@@ -858,7 +856,7 @@ class ContactpersoonController extends BaseController
 
                             if ($request->request->get('dag')) {
                                 $validationJury['dag'] = true;
-                                $classNames['dag'] = 'succesIngevuld';
+                                $classNames['dag']     = 'succesIngevuld';
                             } else {
                                 $this->addFlash(
                                     'error',
@@ -885,13 +883,16 @@ class ContactpersoonController extends BaseController
                         }
                     }
                 }
-                return $this->render('contactpersoon/editJury.html.twig', array(
-                    'menuItems' => $this->menuItems,
-                    'sponsors' => $this->sponsors,
-                    'jury' => $jury,
-                    'classNames' => $classNames,
-                    'csrfToken' => $csrfToken,
-                ));
+                return $this->render(
+                    'contactpersoon/editJury.html.twig',
+                    array(
+                        'menuItems'  => $this->menuItems,
+                        'sponsors'   => $this->sponsors,
+                        'jury'       => $jury,
+                        'classNames' => $classNames,
+                        'csrfToken'  => $csrfToken,
+                    )
+                );
             }
         } else {
             $this->addFlash(
@@ -903,13 +904,13 @@ class ContactpersoonController extends BaseController
     }
 
     /**
-     * @Route("/contactpersoon/removeJury/", name="removeJury")
-     * @Method({"POST"})
+     * @Route("/contactpersoon/removeJury/", name="removeJury", methods={"GET", "POST"})
      */
     public
     function removeJury(
         Request $request
-    ) {
+    )
+    {
         /** @var Jurylid $result */
         $result = $this->getDoctrine()->getRepository('AppBundle:Jurylid')
             ->findOneBy(['id' => $request->request->get('juryId')]);
@@ -946,8 +947,11 @@ class ContactpersoonController extends BaseController
     }
 
     /**
-     * @Route("/contactpersoon/editContactPassword/", name="editContactPassword")
-     * @Method({"GET", "POST"})
+     * @Route("/contactpersoon/editContactPassword/", name="editContactPassword", methods={"GET", "POST"})
+     * @param Request $request
+     *
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse|Response
+     * @throws Exception
      */
     public function editContactPassword(Request $request)
     {
@@ -977,8 +981,8 @@ class ContactpersoonController extends BaseController
                 }
                 if (!($error)) {
                     $userObject = $this->getUser();
-                    $password = $request->request->get('pass1');
-                    $encoder = $this->container
+                    $password   = $request->request->get('pass1');
+                    $encoder    = $this->container
                         ->get('security.encoder_factory')
                         ->getEncoder($userObject);
                     $userObject->setPassword($encoder->encodePassword($password, $userObject->getSalt()));
@@ -992,18 +996,20 @@ class ContactpersoonController extends BaseController
             }
             $csrfToken = $this->getToken();
             $this->setBasicPageData();
-            return $this->render('contactpersoon/editPassword.html.twig', array(
-                'menuItems' => $this->menuItems,
-                'sponsors' => $this->sponsors,
-                'csrfToken' => $csrfToken,
-            ));
+            return $this->render(
+                'contactpersoon/editPassword.html.twig',
+                array(
+                    'menuItems' => $this->menuItems,
+                    'sponsors'  => $this->sponsors,
+                    'csrfToken' => $csrfToken,
+                )
+            );
         }
+        throw new Exception('This is crazy');
     }
 
     /**
-     * @Template()
-     * @Route("/contactpersoon/addVloermuziek/{turnsterId}/", name="addVloermuziek")
-     * @Method({"GET", "POST"})
+     * @Route("/contactpersoon/addVloermuziek/{turnsterId}/", name="addVloermuziek", methods={"GET", "POST"})
      */
     public function addVloermuziekAction(Request $request, $turnsterId)
     {
@@ -1024,15 +1030,15 @@ class ContactpersoonController extends BaseController
             );
             return $this->redirectToRoute('getContactpersoonIndexPage');
         } else {
-            $turnster = [
-                'id' => $result->getId(),
-                'naam' => $result->getVoornaam() . ' ' . $result->getAchternaam(),
+            $turnster    = [
+                'id'          => $result->getId(),
+                'naam'        => $result->getVoornaam() . ' ' . $result->getAchternaam(),
                 'vloermuziek' => $result->getVloermuziek(),
             ];
             $vloermuziek = new Vloermuziek();
-            $form = $this->createFormBuilder($vloermuziek)
+            $form        = $this->createFormBuilder($vloermuziek)
                 ->add('file')
-                ->add('uploadBestand', 'submit')
+                ->add('uploadBestand', SubmitType::class)
                 ->getForm();
             $form->handleRequest($request);
 
@@ -1054,46 +1060,61 @@ class ContactpersoonController extends BaseController
                     );
                 }
             }
-            return $this->render('contactpersoon/addVloermuziek.html.twig', array(
-                'menuItems' => $this->menuItems,
-                'sponsors' => $this->sponsors,
-                'form' => $form->createView(),
-                'turnster' => $turnster,
-            ));
+            return $this->render(
+                'contactpersoon/addVloermuziek.html.twig',
+                array(
+                    'menuItems' => $this->menuItems,
+                    'sponsors'  => $this->sponsors,
+                    'form'      => $form->createView(),
+                    'turnster'  => $turnster,
+                )
+            );
         }
     }
 
     private function getWedstrijdindelingen()
     {
         /** @var ScoresRepository $repo */
-        $repo = $this->getDoctrine()->getRepository('AppBundle:Scores');
+        $repo  = $this->getDoctrine()->getRepository('AppBundle:Scores');
         $dagen = $repo->getDagenForUser($this->getUser()->getId());
-        usort($dagen, function($a, $b) {
-            if ($a['wedstrijddag'] == $b['wedstrijddag']) {
-                return 0;
+        usort(
+            $dagen,
+            function ($a, $b) {
+                if ($a['wedstrijddag'] == $b['wedstrijddag']) {
+                    return 0;
+                }
+                return ($a['wedstrijddag'] < $b['wedstrijddag']) ? -1 : 1;
             }
-            return ($a['wedstrijddag'] < $b['wedstrijddag']) ? -1 : 1;
-        });
-        $banen = [];
+        );
+        $banen           = [];
         $wedstrijdrondes = [];
         $categorieNiveau = [];
         foreach ($dagen as $dag) {
-            $banen[$dag['wedstrijddag']] = $repo->getBanenPerDagForUser($dag['wedstrijddag'], $this->getUser()
-                ->getId());
-            $wedstrijdrondes[$dag['wedstrijddag']] = $repo->getWedstrijdrondesPerDagForUser($dag['wedstrijddag'],
-                $this->getUser()->getId());
+            $banen[$dag['wedstrijddag']]           = $repo->getBanenPerDagForUser(
+                $dag['wedstrijddag'],
+                $this->getUser()
+                    ->getId()
+            );
+            $wedstrijdrondes[$dag['wedstrijddag']] = $repo->getWedstrijdrondesPerDagForUser(
+                $dag['wedstrijddag'],
+                $this->getUser()->getId()
+            );
             foreach ($banen[$dag['wedstrijddag']] as $baan) {
                 foreach ($wedstrijdrondes[$dag['wedstrijddag']] as $wedstrijdronde) {
-                    $categorieNiveau[$dag['wedstrijddag']][$wedstrijdronde['wedstrijdronde']][$baan['baan']] =
-                        $repo->getNiveausPerDagPerRondePerBaanForUser($dag['wedstrijddag'],
-                            $wedstrijdronde['wedstrijdronde'], $baan['baan'], $this->getUser()->getId());
+                    $categorieNiveau[$dag['wedstrijddag']][$wedstrijdronde['wedstrijdronde']][$baan['baan']]
+                        = $repo->getNiveausPerDagPerRondePerBaanForUser(
+                        $dag['wedstrijddag'],
+                        $wedstrijdronde['wedstrijdronde'],
+                        $baan['baan'],
+                        $this->getUser()->getId()
+                    );
 
                 }
             }
         }
         return [
-            'dagen' => $dagen,
-            'banen' => $banen,
+            'dagen'           => $dagen,
+            'banen'           => $banen,
             'wedstrijdrondes' => $wedstrijdrondes,
             'categorieNiveau' => $categorieNiveau,
         ];

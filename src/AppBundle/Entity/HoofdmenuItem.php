@@ -2,6 +2,8 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -38,7 +40,7 @@ class HoofdmenuItem
      */
     public function __construct()
     {
-        $this->submenuItems = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->submenuItems = new ArrayCollection();
     }
 
     public function getAll()
@@ -113,10 +115,11 @@ class HoofdmenuItem
     /**
      * Add submenuItems
      *
-     * @param \AppBundle\Entity\SubmenuItem $submenuItems
+     * @param SubmenuItem $submenuItems
+     *
      * @return HoofdmenuItem
      */
-    public function addSubmenuItem(\AppBundle\Entity\SubmenuItem $submenuItems)
+    public function addSubmenuItem(SubmenuItem $submenuItems)
     {
         $this->submenuItems[] = $submenuItems;
 
@@ -126,9 +129,9 @@ class HoofdmenuItem
     /**
      * Remove submenuItems
      *
-     * @param \AppBundle\Entity\SubmenuItem $submenuItems
+     * @param SubmenuItem $submenuItems
      */
-    public function removeSubmenuItem(\AppBundle\Entity\SubmenuItem $submenuItems)
+    public function removeSubmenuItem(SubmenuItem $submenuItems)
     {
         $this->submenuItems->removeElement($submenuItems);
     }
@@ -136,7 +139,7 @@ class HoofdmenuItem
     /**
      * Get submenuItems
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return Collection
      */
     public function getSubmenuItems()
     {

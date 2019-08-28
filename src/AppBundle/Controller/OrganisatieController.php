@@ -13,13 +13,15 @@ use AppBundle\Entity\Turnster;
 use AppBundle\Entity\User;
 use AppBundle\Entity\UserRepository;
 use AppBundle\Entity\Voorinschrijving;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use DateTime;
+use Exception;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Httpfoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @Security("has_role('ROLE_ORGANISATIE')")
@@ -28,8 +30,12 @@ class OrganisatieController extends BaseController
 {
 
     /**
-     * @Route("/organisatie/{page}/", name="organisatieGetContent", defaults={"page" = "Mijn gegevens"})
-     * @Method({"GET", "POST"})
+     * @Route("/organisatie/{page}/", name="organisatieGetContent", defaults={"page" = "Mijn gegevens"}, methods={"GET"})
+     * @param Request $request
+     * @param         $page
+     *
+     * @return RedirectResponse|Response
+     * @throws Exception
      */
     public function getOrganisatiePage(Request $request, $page)
     {
@@ -55,11 +61,12 @@ class OrganisatieController extends BaseController
             case 'Vloermuziek':
                 return $this->getOrganisatieVloermuziekPage();
         }
+
+        throw new Exception('This is crazy');
     }
 
     /**
-     * @Route("/organisatie/removeContactpersoon/{id}/", name="removeContactpersoon")
-     * @Method({"GET", "POST"})
+     * @Route("/organisatie/removeContactpersoon/{id}/", name="removeContactpersoon", methods={"GET", "POST"})
      */
     public function removeContactpersoon(Request $request, $id)
     {
@@ -96,9 +103,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Template()
-     * @Route("/organisatie/{page}/addReglementen/", name="addReglementen")
-     * @Method({"GET", "POST"})
+     * @Route("/organisatie/{page}/addReglementen/", name="addReglementen", methods={"GET", "POST"})
      */
     public function addReglementenAction(Request $request, $page)
     {
@@ -107,7 +112,7 @@ class OrganisatieController extends BaseController
         $form = $this->createFormBuilder($file)
             ->add('naam')
             ->add('file')
-            ->add('uploadBestand', 'submit')
+            ->add('uploadBestand', SubmitType::class)
             ->getForm();
         $form->handleRequest($request);
 
@@ -115,7 +120,7 @@ class OrganisatieController extends BaseController
             /** @var User $user */
             $user = $this->getUser();
             $file->setUploader($user->getUsername());
-            $file->setCreatedAt(new \DateTime('now'));
+            $file->setCreatedAt(new DateTime('now'));
             $this->addToDB($file);
             return $this->redirectToRoute('organisatieGetContent', ['page' => $page]);
         } else {
@@ -134,9 +139,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Template()
-     * @Route("/organisatie/{page}/addjuryIndeling/", name="addjuryIndeling")
-     * @Method({"GET", "POST"})
+     * @Route("/organisatie/{page}/addjuryIndeling/", name="addjuryIndeling", methods={"GET", "POST"})
      */
     public function addjuryIndelingAction(Request $request, $page)
     {
@@ -145,7 +148,7 @@ class OrganisatieController extends BaseController
         $form = $this->createFormBuilder($file)
             ->add('naam')
             ->add('file')
-            ->add('uploadBestand', 'submit')
+            ->add('uploadBestand', SubmitType::class)
             ->getForm();
         $form->handleRequest($request);
 
@@ -153,7 +156,7 @@ class OrganisatieController extends BaseController
             /** @var User $user */
             $user = $this->getUser();
             $file->setUploader($user->getUsername());
-            $file->setCreatedAt(new \DateTime('now'));
+            $file->setCreatedAt(new DateTime('now'));
             $this->addToDB($file);
             return $this->redirectToRoute('organisatieGetContent', ['page' => $page]);
         } else {
@@ -172,9 +175,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Template()
-     * @Route("/organisatie/{page}/tijdSchema/", name="addtijdSchema")
-     * @Method({"GET", "POST"})
+     * @Route("/organisatie/{page}/tijdSchema/", name="addtijdSchema", methods={"GET", "POST"})
      */
     public function addtijdSchemaAction(Request $request, $page)
     {
@@ -183,7 +184,7 @@ class OrganisatieController extends BaseController
         $form = $this->createFormBuilder($file)
             ->add('naam')
             ->add('file')
-            ->add('uploadBestand', 'submit')
+            ->add('uploadBestand', SubmitType::class)
             ->getForm();
         $form->handleRequest($request);
 
@@ -191,7 +192,7 @@ class OrganisatieController extends BaseController
             /** @var User $user */
             $user = $this->getUser();
             $file->setUploader($user->getUsername());
-            $file->setCreatedAt(new \DateTime('now'));
+            $file->setCreatedAt(new DateTime('now'));
             $this->addToDB($file);
             return $this->redirectToRoute('organisatieGetContent', ['page' => $page]);
         } else {
@@ -267,10 +268,12 @@ class OrganisatieController extends BaseController
         /** @var User[] $users */
         $users = $this->getDoctrine()->getRepository('AppBundle:User')->loadUsersByRole('ROLE_CONTACT');
 
-        usort($users, function($a, $b)
-        {
-            return strcmp($a->getVereniging()->getNaam(), $b->getVereniging()->getNaam());
-        });
+        usort(
+            $users,
+            function ($a, $b) {
+                return strcmp($a->getVereniging()->getNaam(), $b->getVereniging()->getNaam());
+            }
+        );
 
         $juryIndeling = $this->getJuryIndeling();
         /** @var Jurylid[] $results */
@@ -286,26 +289,26 @@ class OrganisatieController extends BaseController
                 ) > 0
             ) {
                 $juryleden[] = [
-                    'id'         => $result->getId(),
-                    'naam'       => $result->getVoornaam() . ' ' . $result->getAchternaam(),
-                    'vereniging' => $result->getUser()->getVereniging()->getNaam() . ' ' . $result->getUser()
+                    'id'          => $result->getId(),
+                    'naam'        => $result->getVoornaam() . ' ' . $result->getAchternaam(),
+                    'vereniging'  => $result->getUser()->getVereniging()->getNaam() . ' ' . $result->getUser()
                             ->getVereniging()->getPlaats(),
-                    'brevet'     => $result->getBrevet(),
-                    'dag'        => $this->getBeschikbareDag($result),
-                    'opmerking'  => $result->getOpmerking(),
-                    'email'      => $result->getEmail(),
+                    'brevet'      => $result->getBrevet(),
+                    'dag'         => $this->getBeschikbareDag($result),
+                    'opmerking'   => $result->getOpmerking(),
+                    'email'       => $result->getEmail(),
                     'phoneNumber' => $result->getPhoneNumber(),
                 ];
             } else {
                 $juryledenNiet[] = [
-                    'id'         => $result->getId(),
-                    'naam'       => $result->getVoornaam() . ' ' . $result->getAchternaam(),
-                    'vereniging' => $result->getUser()->getVereniging()->getNaam() . ' ' . $result->getUser()
+                    'id'          => $result->getId(),
+                    'naam'        => $result->getVoornaam() . ' ' . $result->getAchternaam(),
+                    'vereniging'  => $result->getUser()->getVereniging()->getNaam() . ' ' . $result->getUser()
                             ->getVereniging()->getPlaats(),
-                    'brevet'     => $result->getBrevet(),
-                    'dag'        => $this->getBeschikbareDag($result),
-                    'opmerking'  => $result->getOpmerking(),
-                    'email'      => $result->getEmail(),
+                    'brevet'      => $result->getBrevet(),
+                    'dag'         => $this->getBeschikbareDag($result),
+                    'opmerking'   => $result->getOpmerking(),
+                    'email'       => $result->getEmail(),
                     'phoneNumber' => $result->getPhoneNumber(),
                 ];
             }
@@ -413,8 +416,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Route("/organisatie/editInstellingen/{fieldName}/{data}/", name="editInstellingen", options={"expose"=true})
-     * @Method("GET")
+     * @Route("/organisatie/editInstellingen/{fieldName}/{data}/", name="editInstellingen", options={"expose"=true}, methods={"GET"})
      */
     public function editInstellingen($fieldName, $data)
     {
@@ -430,24 +432,24 @@ class OrganisatieController extends BaseController
             case self::MAX_AANTAL_TURNSTERS:
                 try {
                     $instellingen->setInstelling($fieldName);
-                    $instellingen->setGewijzigd(new \DateTime('now'));
+                    $instellingen->setGewijzigd(new DateTime('now'));
                     $instellingen->setAantal($data);
                     $this->addToDB($instellingen);
                     $result             = $this->getOrganisatieInstellingen($fieldName);
                     $returnData['data'] = $result[$fieldName];
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $returnData['error'] = $e->getMessage();
                 }
                 break;
             default:
                 try {
                     $instellingen->setInstelling($fieldName);
-                    $instellingen->setGewijzigd(new \DateTime('now'));
-                    $instellingen->setDatum(new \DateTime($data));
+                    $instellingen->setGewijzigd(new DateTime('now'));
+                    $instellingen->setDatum(new DateTime($data));
                     $this->addToDB($instellingen);
                     $result             = $this->getOrganisatieInstellingen($fieldName);
                     $returnData['data'] = $result[$fieldName];
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $returnData['error'] = $e->getMessage();
                 }
         }
@@ -455,8 +457,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Route("/organisatie/{page}/genereerVoorinschrijving/", name="genereerVoorinschrijving")
-     * @Method({"GET", "POST"})
+     * @Route("/organisatie/{page}/genereerVoorinschrijving/", name="genereerVoorinschrijving", methods={"GET", "POST"})
      */
     public function genereerVoorinschrijving(Request $request, $page)
     {
@@ -495,8 +496,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Route("/organisatie/{page}/removeVoorinschrijving/{id}", name="removeVoorinschrijving")
-     * @Method({"GET"})
+     * @Route("/organisatie/{page}/removeVoorinschrijving/{id}", name="removeVoorinschrijving", methods={"GET"})
      */
     public function removeVoorinschrijvingsPage($page, $id)
     {
@@ -526,8 +526,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Route("/organisatie/{page}/refreshVoorinschrijving/{id}", name="refreshVoorinschrijving")
-     * @Method({"GET"})
+     * @Route("/organisatie/{page}/refreshVoorinschrijving/{id}", name="refreshVoorinschrijving", methods={"GET"})
      */
     public function refreshVoorinschrijvingsPage($page, $id)
     {
@@ -607,11 +606,11 @@ class OrganisatieController extends BaseController
      */
     private function shouldRemoveInschrijvingenBeDisabled($instellingen)
     {
-        $inschrijvingOpeningDateTime = new \DateTime($instellingen['Opening inschrijving']);
+        $inschrijvingOpeningDateTime = new DateTime($instellingen['Opening inschrijving']);
         $disableVanaf                = clone $inschrijvingOpeningDateTime;
         $disableVanaf->modify('-1 month');
 
-        $nu = new \DateTime();
+        $nu = new DateTime();
 
         if ($nu < $disableVanaf) {
             return false;
@@ -694,7 +693,7 @@ class OrganisatieController extends BaseController
                     $aantallenPerNiveau['geplaatst'][$categorie][$niveau]  = 0;
                     $aantallenPerNiveau['wachtlijst'][$categorie][$niveau] = 0;
                     foreach ($geboortejaren as $geboortejaar) {
-                        $aantallenPerNiveau['geplaatst'][$categorie][$niveau] += $this->getDoctrine()->getRepository
+                        $aantallenPerNiveau['geplaatst'][$categorie][$niveau]  += $this->getDoctrine()->getRepository
                         (
                             'AppBundle:Turnster'
                         )
@@ -802,8 +801,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Route("/organisatie/{page}/niveauToevoegen/", name="niveauToevoegen")
-     * @Method({"GET", "POST"})
+     * @Route("/organisatie/{page}/niveauToevoegen/", name="niveauToevoegen", methods={"GET", "POST"})
      */
     public function niveauToevoegen(Request $request, $page)
     {
@@ -837,8 +835,7 @@ class OrganisatieController extends BaseController
 
     /**
      * @Route("/organisatie/{page}/niveauVerwijderen/{id}/",
-     * name="niveauVerwijderenAjaxCall", options={"expose"=true})
-     * @Method("GET")
+     * name="niveauVerwijderenAjaxCall", options={"expose"=true}, methods={"GET"})
      */
     public function niveauVerwijderenAjaxCall($id, $page)
     {
@@ -847,12 +844,11 @@ class OrganisatieController extends BaseController
         if ($result) {
             $this->removeFromDB($result);
         }
-        return new Response('true');
+        return new JsonResponse('true');
     }
 
     /**
-     * @Route("/organisatie/{page}/betalingInzien/{userId}/", name="betalingInzien")
-     * @Method("GET")
+     * @Route("/organisatie/{page}/betalingInzien/{userId}/", name="betalingInzien", methods={"GET"})
      */
     public function betalingInzien($page, $userId)
     {
@@ -894,7 +890,7 @@ class OrganisatieController extends BaseController
             /** @var Betaling $betaling */
             foreach ($betalingenObjecten as $betaling) {
                 $betaaldBedrag += $betaling->getBedrag();
-                $betalingen[] = [
+                $betalingen[]  = [
                     'id'     => $betaling->getId(),
                     'datum'  => $betaling->getDatumBetaald()->format('d-m-Y'),
                     'bedrag' => $betaling->getBedrag(),
@@ -940,8 +936,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Route("/organisatie/{page}/organisatieGetFacturen/{userId}/", name="organisatieGetFacturen")
-     * @Method("GET")
+     * @Route("/organisatie/{page}/organisatieGetFacturen/{userId}/", name="organisatieGetFacturen", methods={"GET"})
      */
     public function organisatieGetFacturen($userId)
     {
@@ -949,8 +944,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Route("/organisatie/{page}/removeBetaling/{userId}/", name="removeBetaling")
-     * @Method({"POST"})
+     * @Route("/organisatie/{page}/removeBetaling/{userId}/", name="removeBetaling", methods={"POST"})
      */
     public function removeBetaling(Request $request, $page, $userId)
     {
@@ -985,8 +979,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Route("/organisatie/{page}/addBetaling/{userId}/", name="addBetaling")
-     * @Method({"GET", "POST"})
+     * @Route("/organisatie/{page}/addBetaling/{userId}/", name="addBetaling", methods={"GET", "POST"})
      */
     public function addBetaling(Request $request, $page, $userId)
     {
@@ -1000,7 +993,7 @@ class OrganisatieController extends BaseController
                 if ($this->isTokenValid($postedToken)) {
                     $betaling = new Betaling();
                     $betaling->setBedrag(str_replace(',', '.', $request->request->get('bedrag')));
-                    $betaling->setDatumBetaald(new \DateTime($request->request->get('datum')));
+                    $betaling->setDatumBetaald(new DateTime($request->request->get('datum')));
                     $betaling->setUser($result);
                     $result->addBetaling($betaling);
                     $this->addToDB($result);
@@ -1065,8 +1058,7 @@ class OrganisatieController extends BaseController
 
     /**
      * @Route("/organisatie/bekijkInschrijvingenPerNiveau/removeOrganisatieTurnster/{id}",
-     * name="removeOrganisatieTurnsterAjaxCall", options={"expose"=true})
-     * @Method("GET")
+     * name="removeOrganisatieTurnsterAjaxCall", options={"expose"=true}, methods={"GET"})
      */
     public function removeOrganisatieTurnsterAjaxCall($id)
     {
@@ -1075,13 +1067,12 @@ class OrganisatieController extends BaseController
         if ($result) {
             $this->removeFromDB($result);
         }
-        return new Response('true');
+        return new JsonResponse('true');
     }
 
     /**
      * @Route("/organisatie/Instellingen/publiceeerUitslag/{id}",
-     * name="publiceeerUitslagAjaxCall", options={"expose"=true})
-     * @Method("GET")
+     * name="publiceeerUitslagAjaxCall", options={"expose"=true}, methods={"GET"})
      */
     public function publiceeerUitslagAjaxCall($id)
     {
@@ -1092,13 +1083,12 @@ class OrganisatieController extends BaseController
             $result->setUitslagGepubliceerd(1);
             $this->addToDB($result);
         }
-        return new Response('true');
+        return new JsonResponse('true');
     }
 
     /**
      * @Route("/organisatie/Instellingen/annuleerPubliceren/{id}",
-     * name="annuleerPublicerenAjaxCall", options={"expose"=true})
-     * @Method("GET")
+     * name="annuleerPublicerenAjaxCall", options={"expose"=true}, methods={"GET"})
      */
     public function annuleerPublicerenAjaxCall($id)
     {
@@ -1109,13 +1099,12 @@ class OrganisatieController extends BaseController
             $result->setUitslagGepubliceerd(0);
             $this->addToDB($result);
         }
-        return new Response('true');
+        return new JsonResponse('true');
     }
 
     /**
      * @Route("/organisatie/Juryzaken/changeJuryDagAjaxCall/{id}/{dag}/",
-     * name="changeJuryDagAjaxCall", options={"expose"=true})
-     * @Method("GET")
+     * name="changeJuryDagAjaxCall", options={"expose"=true}, methods={"GET"})
      */
     public function changeJuryDagAjaxCall($id, $dag)
     {
@@ -1128,13 +1117,12 @@ class OrganisatieController extends BaseController
             $this->setJurylidBeschikbareDagenFromPostData($dag, $result);
             $this->addToDB($result);
         }
-        return new Response('true');
+        return new JsonResponse('true');
     }
 
     /**
      * @Route("/organisatie/bekijkInschrijvingenPerNiveau/removeOrganisatieJury/{id}",
-     * name="removeOrganisatieJuryAjaxCall", options={"expose"=true})
-     * @Method("GET")
+     * name="removeOrganisatieJuryAjaxCall", options={"expose"=true}, methods={"GET"})
      */
     public function removeOrganisatieJuryAjaxCall($id)
     {
@@ -1143,13 +1131,12 @@ class OrganisatieController extends BaseController
         if ($result) {
             $this->removeFromDB($result);
         }
-        return new Response('true');
+        return new JsonResponse('true');
     }
 
     /**
      * @Route("/organisatie/bekijkInschrijvingenPerNiveau/moveTurnsterToWachtlijst/{id}",
-     * name="moveTurnsterToWachtlijst", options={"expose"=true})
-     * @Method("GET")
+     * name="moveTurnsterToWachtlijst", options={"expose"=true}, methods={"GET"})
      */
     public function moveTurnsterToWachtlijst($id)
     {
@@ -1160,13 +1147,12 @@ class OrganisatieController extends BaseController
             $result->setWachtlijst(true);
             $this->addToDB($result);
         }
-        return new Response('true');
+        return new JsonResponse('true');
     }
 
     /**
      * @Route("/organisatie/bekijkInschrijvingenPerNiveau/moveTurnsterFromWachtlijst/{id}",
-     * name="moveTurnsterFromWachtlijst", options={"expose"=true})
-     * @Method("GET")
+     * name="moveTurnsterFromWachtlijst", options={"expose"=true}, methods={"GET"})
      */
     public function moveTurnsterFromWachtlijst($id)
     {
@@ -1177,12 +1163,11 @@ class OrganisatieController extends BaseController
             $result->setWachtlijst(false);
             $this->addToDB($result);
         }
-        return new Response('true');
+        return new JsonResponse('true');
     }
 
     /**
-     * @Route("/organisatie/{page}/bekijkInschrijvingenPerNiveau/{categorie}/{niveau}/", name="bekijkInschrijvingenPerNiveau")
-     * @Method("GET")
+     * @Route("/organisatie/{page}/bekijkInschrijvingenPerNiveau/{categorie}/{niveau}/", name="bekijkInschrijvingenPerNiveau", methods={"GET"})
      */
     public function bekijkInschrijvingenPerNiveau($page, $categorie, $niveau)
     {
@@ -1237,8 +1222,7 @@ class OrganisatieController extends BaseController
 
     /**
      * @Route("/organisatie/{page}/bekijkInschrijvingenPerContactpersoon/{userId}/",
-     * name="bekijkInschrijvingenPerContactpersoon")
-     * @Method("GET")
+     * name="bekijkInschrijvingenPerContactpersoon", methods={"GET"})
      */
     public function bekijkInschrijvingenPerContactpersoon($page, $userId)
     {
@@ -1343,8 +1327,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Route("/organisatie/{page}/editPassword/", name="editPassword")
-     * @Method({"GET", "POST"})
+     * @Route("/organisatie/{page}/editPassword/", name="editPassword", methods={"GET", "POST"})
      */
     public function editPassword(Request $request, $page)
     {
@@ -1404,11 +1387,11 @@ class OrganisatieController extends BaseController
                 )
             );
         }
+        throw new Exception('This is crazy');
     }
 
     /**
-     * @Route("/organisatie/{page}/uploadWedstrijdindelingen/", name="uploadWedstrijdindelingen")
-     * @Method({"GET", "POST"})
+     * @Route("/organisatie/{page}/uploadWedstrijdindelingen/", name="uploadWedstrijdindelingen", methods={"GET", "POST"})
      */
     public function uploadWedstrijdindelingen(Request $request, $page)
     {
@@ -1482,8 +1465,7 @@ class OrganisatieController extends BaseController
     }
 
     /**
-     * @Route("/organisatie/{page}/removeInschrijvingen/", name="removeInschrijvingen")
-     * @Method({"GET", "POST"})
+     * @Route("/organisatie/{page}/removeInschrijvingen/", name="removeInschrijvingen", methods={"GET", "POST"})
      */
     public function removeInschrijvingen(Request $request, $page)
     {

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -44,7 +45,7 @@ class Reglementen
 
     /**
      * @ORM\Column(type="datetime")
-     * @var \DateTime $createdAt
+     * @var DateTime $createdAt
      */
     private $createdAt;
 
@@ -52,9 +53,9 @@ class Reglementen
     public function getAll()
     {
         $items = [
-            'id' => $this->id,
-            'naam' => $this->naam,
-            'locatie' => $this->locatie,
+            'id'        => $this->id,
+            'naam'      => $this->naam,
+            'locatie'   => $this->locatie,
             'createdAt' => $this->createdAt->format('d-m-Y H:i'),
         ];
         return $items;
@@ -64,21 +65,21 @@ class Reglementen
     {
         return null === $this->locatie
             ? null
-            : $this->getUploadRootDir().'/'.$this->locatie;
+            : $this->getUploadRootDir() . '/' . $this->locatie;
     }
 
     public function getWebPath()
     {
         return null === $this->locatie
             ? null
-            : $this->getUploadDir().'/'.$this->locatie;
+            : $this->getUploadDir() . '/' . $this->locatie;
     }
 
     public function getUploadRootDir()
     {
         // the absolute directory path where uploaded
         // documents should be saved
-        return __DIR__.'/../../../web/'.$this->getUploadDir();
+        return __DIR__ . '/../../../web/' . $this->getUploadDir();
     }
 
     protected function getUploadDir()
@@ -102,13 +103,10 @@ class Reglementen
      * Set naam
      *
      * @param string $naam
-     * @return FileUpload
      */
     public function setNaam($naam)
     {
         $this->naam = $naam;
-
-        return $this;
     }
 
     /**
@@ -125,13 +123,10 @@ class Reglementen
      * Set locatie
      *
      * @param string $locatie
-     * @return FileUpload
      */
     public function setLocatie($locatie)
     {
         $this->locatie = $locatie;
-
-        return $this;
     }
 
     /**
@@ -153,7 +148,7 @@ class Reglementen
     {
         $this->file = $file;
         if (isset($this->locatie)) {
-            $this->temp = $this->locatie;
+            $this->temp    = $this->locatie;
             $this->locatie = null;
         } else {
             $this->locatie = 'initial';
@@ -177,8 +172,8 @@ class Reglementen
     public function preUpload()
     {
         if (null !== $this->getFile()) {
-            $filename = 'Reglementen';
-            $this->locatie = $filename.'.'.$this->getFile()->getClientOriginalExtension();
+            $filename      = 'Reglementen';
+            $this->locatie = $filename . '.' . $this->getFile()->getClientOriginalExtension();
         }
     }
 
@@ -193,7 +188,7 @@ class Reglementen
         }
         $this->getFile()->move($this->getUploadRootDir(), $this->locatie);
         if (isset($this->temp)) {
-            unlink($this->getUploadRootDir().'/'.$this->temp);
+            unlink($this->getUploadRootDir() . '/' . $this->temp);
             $this->temp = null;
         }
         $this->file = null;
@@ -221,6 +216,7 @@ class Reglementen
      * Set uploader
      *
      * @param string $uploader
+     *
      * @return Reglementen
      */
     public function setUploader($uploader)
@@ -233,7 +229,7 @@ class Reglementen
     /**
      * Get uploader
      *
-     * @return string 
+     * @return string
      */
     public function getUploader()
     {
@@ -243,7 +239,8 @@ class Reglementen
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
+     * @param DateTime $createdAt
+     *
      * @return Reglementen
      */
     public function setCreatedAt($createdAt)
@@ -256,7 +253,7 @@ class Reglementen
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getCreatedAt()
     {

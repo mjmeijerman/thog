@@ -13,13 +13,16 @@ use AppBundle\Entity\Turnster;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Vereniging;
 use AppBundle\Entity\Voorinschrijving;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use DateTime;
+use Exception;
+use Swift_Message;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Httpfoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Constraints\Email as EmailConstraint;
 use Symfony\Component\Validator\Constraints\NotBlank as EmptyConstraint;
 
@@ -58,6 +61,11 @@ class BaseController extends Controller
     protected $aantalWachtlijst;
     protected $aantalJury;
 
+    /**
+     * @param User $user
+     *
+     * @return string
+     */
     protected function getFactuurNummer($user)
     {
         return (BaseController::TOURNAMENT_SHORT_NAME . date('Y', time()) . '-' . $user->getId());
@@ -150,7 +158,7 @@ class BaseController extends Controller
             ->findOneBy(
                 array('token' => $token)
             );
-        $result->setUsedAt(new \DateTime('now'));
+        $result->setUsedAt(new DateTime('now'));
         $this->addToDB($result);
     }
 
@@ -193,7 +201,7 @@ class BaseController extends Controller
         $gereserveerdePlekken = $this->getDoctrine()->getRepository('AppBundle:Turnster')
             ->getGereserveerdePlekken();
         foreach ($gereserveerdePlekken as $gereserveerdePlek) {
-            if ($gereserveerdePlek->getExpirationDate() < new \DateTime('now')) {
+            if ($gereserveerdePlek->getExpirationDate() < new DateTime('now')) {
                 $this->removeFromDB($gereserveerdePlek);
             }
         }
@@ -321,6 +329,12 @@ class BaseController extends Controller
         }
     }
 
+    /**
+     * @param $categorie
+     *
+     * @return array|false|int|string
+     * @throws Exception
+     */
     protected function getGeboortejaarFromCategorie($categorie)
     {
         switch ($categorie) {
@@ -346,6 +360,8 @@ class BaseController extends Controller
                     $geboortejaren[] = date('Y', time()) - $i;
                 }
                 return $geboortejaren;
+            default:
+                throw new Exception('This is crazy');
         }
     }
 
@@ -412,7 +428,7 @@ class BaseController extends Controller
                 ->getTijdVol();
             $instelling = new Instellingen();
             $instelling->setInstelling('tijdVol');
-            $instelling->setGewijzigd(new \DateTime('now'));
+            $instelling->setGewijzigd(new DateTime('now'));
             $instelling->setDatum($result[0]['creationDate']);
             $this->addToDB($instelling);
             $result = $this->getDoctrine()
@@ -493,7 +509,7 @@ class BaseController extends Controller
 
     protected function verwijderenTurnsterToegestaan()
     {
-        /** @var \DateTime[] $instellingGeopend */
+        /** @var DateTime[] $instellingGeopend */
         $instellingGeopend = $this->getOrganisatieInstellingen(self::OPENING_INSCHRIJVING);
         if ((time() > strtotime($instellingGeopend[self::OPENING_INSCHRIJVING]))
         ) {
@@ -627,6 +643,12 @@ class BaseController extends Controller
         return $pageExists;
     }
 
+    /**
+     * @param $maandNummer
+     *
+     * @return string
+     * @throws Exception
+     */
     protected function maand($maandNummer)
     {
         switch ($maandNummer) {
@@ -666,6 +688,8 @@ class BaseController extends Controller
             case '12':
                 return 'December';
                 break;
+            default:
+                throw new Exception('This is crazy');
         }
     }
 
@@ -700,7 +724,11 @@ class BaseController extends Controller
     /**
      * Creates a token voor voorinschrijvingen
      *
+     * @param      $email
+     * @param null $tokenObject
+     *
      * @return void
+     * @throws Exception
      */
     protected function createVoorinschrijvingToken($email, $tokenObject = null)
     {
@@ -709,7 +737,7 @@ class BaseController extends Controller
             $tokenObject = new Voorinschrijving();
         }
         $tokenObject->setToken($token);
-        $tokenObject->setCreatedAt(new \DateTime('now'));
+        $tokenObject->setCreatedAt(new DateTime('now'));
         $tokenObject->setTokenSentTo($email);
 
         $this->addToDB($tokenObject);
@@ -757,7 +785,7 @@ class BaseController extends Controller
 
     protected function sendEmail($subject, $to, $view, array $parameters = array(), $from = BaseController::TOURNAMENT_CONTACT_EMAIL)
     {
-        $message = \Swift_Message::newInstance()
+        $message = Swift_Message::newInstance()
             ->setSubject($subject)
             ->setFrom($from)
             ->setTo($to)
@@ -776,7 +804,7 @@ class BaseController extends Controller
         $this->get('mailer')->send($message);
 
         $sendMail = new SendMail();
-        $sendMail->setDatum(new \DateTime())
+        $sendMail->setDatum(new DateTime())
             ->setVan($from)
             ->setAan($to)
             ->setOnderwerp($subject)
@@ -802,8 +830,11 @@ class BaseController extends Controller
     }
 
     /**
-     * @Route("/contactgegevens/edit/{fieldName}/{data}/", name="editGegevens", options={"expose"=true})
-     * @Method("GET")
+     * @Route("/contactgegevens/edit/{fieldName}/{data}/", name="editGegevens", options={"expose"=true}, methods={"GET"})
+     * @param $fieldName
+     * @param $data
+     *
+     * @return JsonResponse
      */
     public function editGegevens($fieldName, $data)
     {
@@ -827,7 +858,7 @@ class BaseController extends Controller
                         $userObject->setVoornaam($data);
                         $this->addToDB($userObject);
                         $returnData['data'] = $userObject->getVoornaam();
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $returnData['error'] = $e->getMessage();
                     }
                 } else {
@@ -847,7 +878,7 @@ class BaseController extends Controller
                         $userObject->setAchternaam($data);
                         $this->addToDB($userObject);
                         $returnData['data'] = $userObject->getAchternaam();
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $returnData['error'] = $e->getMessage();
                     }
                 } else {
@@ -873,7 +904,7 @@ class BaseController extends Controller
                             $userObject->setEmail($data);
                             $this->addToDB($userObject);
                             $returnData['data'] = $userObject->getEmail();
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             $returnData['error'] = $e->getMessage();
                         }
                     } else {
@@ -900,7 +931,7 @@ class BaseController extends Controller
                             $userObject->setTelefoonnummer($data);
                             $this->addToDB($userObject);
                             $returnData['data'] = $userObject->getTelefoonnummer();
-                        } catch (\Exception $e) {
+                        } catch (Exception $e) {
                             $returnData['error'] = $e->getMessage();
                         }
                     } else {
@@ -918,7 +949,7 @@ class BaseController extends Controller
                     $userObject->setVerantwoordelijkheid($data);
                     $this->addToDB($userObject);
                     $returnData['data'] = $userObject->getVerantwoordelijkheid();
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $returnData['error'] = $e->getMessage();
                 }
                 break;
@@ -1056,8 +1087,7 @@ class BaseController extends Controller
     }
 
     /**
-     * @Route("/contactpersoon/factuur/", name="pdfFactuur")
-     * @Method("GET")
+     * @Route("/contactpersoon/factuur/", name="pdfFactuur", methods={"GET"})
      */
     public function pdfFactuur($userId = null)
     {
@@ -1284,7 +1314,7 @@ class BaseController extends Controller
                     209,
                     'Mochten er zich problemen voordoen, neemt u dan alstublieft contact op via ' . BaseController::TOURNAMENT_CONTACT_EMAIL
                 );
-                return new Response(
+                return new BinaryFileResponse(
                     $pdf->Output(), 200, array(
                                       'Content-Type' => 'application/pdf'
                                   )
@@ -1298,8 +1328,7 @@ class BaseController extends Controller
     }
 
     /**
-     * @Route("/updateScores/{wedstrijdnummer}/", name="updateScores")
-     * @Method({"GET"})
+     * @Route("/updateScores/{wedstrijdnummer}/", name="updateScores", methods={"GET"})
      */
     public function updateScores(Request $request, $wedstrijdnummer)
     {
@@ -1330,9 +1359,9 @@ class BaseController extends Controller
                                     $score->setDSprong2($request->query->get('dSprong2'));
                                     $score->setESprong2($request->query->get('eSprong2'));
                                     $score->setNSprong2($request->query->get('nSprong2'));
-                                    $score->setUpdatedSprong(new \DateTime('now'));
+                                    $score->setUpdatedSprong(new DateTime('now'));
                                     $this->addToDB($score);
-                                } catch (\Exception $e) {
+                                } catch (Exception $e) {
                                     return new Response($e->getMessage(), 500);
                                 }
                                 return new Response('ok', 200);
@@ -1347,9 +1376,9 @@ class BaseController extends Controller
                                     $score->setDBrug($request->query->get('dBrug'));
                                     $score->setEBrug($request->query->get('eBrug'));
                                     $score->setNBrug($request->query->get('nBrug'));
-                                    $score->setUpdatedBrug(new \DateTime('now'));
+                                    $score->setUpdatedBrug(new DateTime('now'));
                                     $this->addToDB($score);
-                                } catch (\Exception $e) {
+                                } catch (Exception $e) {
                                     return new Response($e->getMessage(), 500);
                                 }
                                 return new Response('ok', 200);
@@ -1364,9 +1393,9 @@ class BaseController extends Controller
                                     $score->setDBalk($request->query->get('dBalk'));
                                     $score->setEBalk($request->query->get('eBalk'));
                                     $score->setNBalk($request->query->get('nBalk'));
-                                    $score->setUpdatedBalk(new \DateTime('now'));
+                                    $score->setUpdatedBalk(new DateTime('now'));
                                     $this->addToDB($score);
-                                } catch (\Exception $e) {
+                                } catch (Exception $e) {
                                     return new Response($e->getMessage(), 500);
                                 }
                                 return new Response('ok', 200);
@@ -1381,9 +1410,9 @@ class BaseController extends Controller
                                     $score->setDVloer($request->query->get('dVloer'));
                                     $score->setEVloer($request->query->get('eVloer'));
                                     $score->setNVloer($request->query->get('nVloer'));
-                                    $score->setUpdatedVloer(new \DateTime('now'));
+                                    $score->setUpdatedVloer(new DateTime('now'));
                                     $this->addToDB($score);
-                                } catch (\Exception $e) {
+                                } catch (Exception $e) {
                                     return new Response($e->getMessage(), 500);
                                 }
                                 return new Response('ok', 200);
@@ -1404,8 +1433,7 @@ class BaseController extends Controller
     }
 
     /**
-     * @Route("/publiceerUitslag/{categorie}/{niveau}/", name="publiceerUitslag")
-     * @Method({"GET"})
+     * @Route("/publiceerUitslag/{categorie}/{niveau}/", name="publiceerUitslag", methods={"GET"})
      */
     public function publiceerUitslag(Request $request, $categorie, $niveau)
     {
@@ -1425,7 +1453,7 @@ class BaseController extends Controller
                     $result->setUitslagGepubliceerd(true);
                     $this->addToDB($result);
                     return new Response('ok', 200);
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     return new Response($e->getMessage(), 500);
                 }
             } else {
@@ -1436,8 +1464,7 @@ class BaseController extends Controller
     }
 
     /**
-     * @Route("/getScore/{wedstrijdnummer}/{toestel}/", name="getScore")
-     * @Method({"GET"})
+     * @Route("/getScore/{wedstrijdnummer}/{toestel}/", name="getScore", methods={"GET"})
      */
     public function getScore(Request $request, $wedstrijdnummer, $toestel)
     {

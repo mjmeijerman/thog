@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -44,7 +45,7 @@ class JuryIndeling
 
     /**
      * @ORM\Column(type="datetime")
-     * @var \DateTime $createdAt
+     * @var DateTime $createdAt
      */
     private $createdAt;
 
@@ -102,13 +103,10 @@ class JuryIndeling
      * Set naam
      *
      * @param string $naam
-     * @return FileUpload
      */
     public function setNaam($naam)
     {
         $this->naam = $naam;
-
-        return $this;
     }
 
     /**
@@ -125,13 +123,10 @@ class JuryIndeling
      * Set locatie
      *
      * @param string $locatie
-     * @return FileUpload
      */
     public function setLocatie($locatie)
     {
         $this->locatie = $locatie;
-
-        return $this;
     }
 
     /**
@@ -221,13 +216,10 @@ class JuryIndeling
      * Set uploader
      *
      * @param string $uploader
-     * @return Reglementen
      */
     public function setUploader($uploader)
     {
         $this->uploader = $uploader;
-
-        return $this;
     }
 
     /**
@@ -243,20 +235,17 @@ class JuryIndeling
     /**
      * Set createdAt
      *
-     * @param \DateTime $createdAt
-     * @return Reglementen
+     * @param DateTime $createdAt
      */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
-
-        return $this;
     }
 
     /**
      * Get createdAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreatedAt()
     {

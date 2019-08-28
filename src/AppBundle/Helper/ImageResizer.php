@@ -2,6 +2,7 @@
 
 namespace AppBundle\Helper;
 
+use stdClass;
 use Symfony\Component\Filesystem\Filesystem;
 
 class ImageResizer
@@ -110,7 +111,7 @@ class ImageResizer
      * Gets image details such as the extension, sizes and filename and returns them as a standard object.
      *
      * @param $imageWithPath
-     * @return \stdClass
+     * @return stdClass
      */
     private function getImageDetails($imageWithPath)
     {
@@ -130,7 +131,7 @@ class ImageResizer
         $name = substr($lastPart, 0, $dotPos);
         $extension = substr($lastPart, $dotPos + 1);
 
-        $Details = new \stdClass();
+        $Details = new stdClass();
         $Details->height = $size[1];
         $Details->width = $size[0];
         $Details->ratio = $size[0] / $size[1];

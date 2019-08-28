@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -72,13 +73,13 @@ class Turnster
 
     /**
      * @ORM\Column(type="datetime")
-     * @var \DateTime
+     * @var DateTime
      */
     private $creationDate;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @var \DateTime
+     * @var DateTime
      */
     private $expirationDate;
 
@@ -99,12 +100,6 @@ class Turnster
      * @ORM\JoinColumn(name="score_id", referencedColumnName="id", nullable=true)
      **/
     private $scores;
-
-    /**
-     * Get id
-     *
-     * @return integer 
-     */
 
     public function getUitslagenLijst()
     {
@@ -267,7 +262,7 @@ class Turnster
     /**
      * Set creationDate
      *
-     * @param \DateTime $creationDate
+     * @param DateTime $creationDate
      * @return Turnster
      */
     public function setCreationDate($creationDate)
@@ -280,7 +275,7 @@ class Turnster
     /**
      * Get creationDate
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getCreationDate()
     {
@@ -290,7 +285,7 @@ class Turnster
     /**
      * Set expirationDate
      *
-     * @param \DateTime $expirationDate
+     * @param DateTime $expirationDate
      * @return Turnster
      */
     public function setExpirationDate($expirationDate)
@@ -303,7 +298,7 @@ class Turnster
     /**
      * Get expirationDate
      *
-     * @return \DateTime 
+     * @return DateTime
      */
     public function getExpirationDate()
     {
@@ -336,10 +331,11 @@ class Turnster
     /**
      * Set user
      *
-     * @param \AppBundle\Entity\User $user
+     * @param User $user
+     *
      * @return Turnster
      */
-    public function setUser(\AppBundle\Entity\User $user = null)
+    public function setUser(User $user = null)
     {
         $this->user = $user;
 
@@ -349,7 +345,7 @@ class Turnster
     /**
      * Get user
      *
-     * @return \AppBundle\Entity\User 
+     * @return User
      */
     public function getUser()
     {
@@ -359,10 +355,11 @@ class Turnster
     /**
      * Set vloermuziek
      *
-     * @param \AppBundle\Entity\Vloermuziek $vloermuziek
+     * @param Vloermuziek $vloermuziek
+     *
      * @return Turnster
      */
-    public function setVloermuziek(\AppBundle\Entity\Vloermuziek $vloermuziek = null)
+    public function setVloermuziek(Vloermuziek $vloermuziek = null)
     {
         $this->vloermuziek = $vloermuziek;
 
@@ -372,7 +369,7 @@ class Turnster
     /**
      * Get vloermuziek
      *
-     * @return \AppBundle\Entity\Vloermuziek 
+     * @return Vloermuziek
      */
     public function getVloermuziek()
     {
@@ -382,10 +379,11 @@ class Turnster
     /**
      * Set scores
      *
-     * @param \AppBundle\Entity\Scores $scores
+     * @param Scores $scores
+     *
      * @return Turnster
      */
-    public function setScores(\AppBundle\Entity\Scores $scores = null)
+    public function setScores(Scores $scores = null)
     {
         $this->scores = $scores;
 
@@ -395,7 +393,7 @@ class Turnster
     /**
      * Get scores
      *
-     * @return \AppBundle\Entity\Scores
+     * @return Scores
      */
     public function getScores()
     {

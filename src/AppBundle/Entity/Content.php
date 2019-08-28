@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -35,7 +36,7 @@ class Content
     /**
      * Set gewijzigd
      *
-     * @param \DateTime $gewijzigd
+     * @param DateTime $gewijzigd
      * @return Content
      */
     public function setGewijzigd($gewijzigd)
@@ -48,7 +49,7 @@ class Content
     /**
      * Get gewijzigd
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getGewijzigd()
     {

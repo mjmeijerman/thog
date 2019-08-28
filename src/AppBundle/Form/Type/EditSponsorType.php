@@ -3,6 +3,7 @@
 namespace AppBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,7 +15,7 @@ class EditSponsorType extends AbstractType
             ->add('naam')
             ->add('website')
             ->add('omschrijving')
-            ->add('opslaan', 'submit')
+            ->add('opslaan', SubmitType::class)
         ;
     }
 

@@ -2,6 +2,7 @@
 
 namespace AppBundle\Entity;
 
+use DateTime;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -73,7 +74,7 @@ class Instellingen
     /**
      * Set datum
      *
-     * @param \DateTime $datum
+     * @param DateTime $datum
      * @return Instellingen
      */
     public function setDatum($datum)
@@ -86,7 +87,7 @@ class Instellingen
     /**
      * Get datum
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getDatum()
     {
@@ -119,7 +120,7 @@ class Instellingen
     /**
      * Set gewijzigd
      *
-     * @param \DateTime $gewijzigd
+     * @param DateTime $gewijzigd
      * @return Instellingen
      */
     public function setGewijzigd($gewijzigd)
@@ -132,7 +133,7 @@ class Instellingen
     /**
      * Get gewijzigd
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getGewijzigd()
     {
