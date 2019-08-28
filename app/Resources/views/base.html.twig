@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>The Hague Open Gymnastics</title>
+    <meta charset="UTF-8"/>
+    {% block stylesheets %}
+        <link href="{{ asset('css/main.css') }}" rel="stylesheet"/>
+    {% endblock %}
+    <link rel="shortcut icon" type="image/png" href="{{ asset('images/favicon.png') }}"/>
+</head>
+<body>
+<center>
+    <div id="error_container">
+        {% if app.session.flashbag.get('error') is defined %}
+            {% for flash_message in app.session.flashbag.get('error') %}
+                <div id="error">
+                    {{ flash_message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    <div id="error_success_container">
+        {% if app.session.flashbag.get('success') is defined %}
+            {% for flash_message in app.session.flashbag.get('success') %}
+                <div id="error_success">
+                    {{ flash_message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    {% if timeToExpiration is defined %}
+        <div id="countdown">
+            <div id="countdown">
+                <div id="countdown_inner">
+                    <div>
+                        <span class="hours"></span>
+                        <div class="smalltext">Uur</div>
+                    </div>
+                    <div>
+                        <span class="minutes"></span>
+                        <div class="smalltext">Minuten</div>
+                    </div>
+                    <div>
+                        <span class="seconds"></span>
+                        <div class="smalltext">Seconden</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <div id="container">
+        <div id="header">
+            <a href="{{ path('getIndexPage') }}">
+                <img src="{{ asset('images/header.png') }}" alt=""/>
+            </a>
+        </div>
+
+        <div id="fill">.</div>
+        <nav id="primary_nav_wrap">
+            <ul>
+                {% for menuItem in menuItems %}
+                    <li>
+                        {% if menuItem.submenuItems %}
+                            <a href="#">{{ menuItem.naam }}</a>
+                            <ul>
+                                {% for submenuItem in menuItem.submenuItems %}
+                                    <li {% if loop.index == menuItem.submenuItems|length %}id="last"{% endif %}>
+                                        {% if submenuItem.naam == 'Uitslagen' %}
+                                            <a href="{{ path('uitslagen') }}" target="_blank">{{ submenuItem.naam }}</a>
+                                        {% else %}
+                                            <a href="{{ path('getContent', { 'page': submenuItem.naam }) }}">{{ submenuItem.naam }}</a>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <a href="{{ path('getContent', { 'page': menuItem.naam }) }}">{{ menuItem.naam }}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </nav>
+
+        {% if app.user %}
+            <div id="logout">
+                {% if is_granted('ROLE_PREVIOUS_ADMIN') or is_granted('ROLE_PREVIOUS_ORGANISATIE') %}
+                    <a href="{{ path('getContent', {'_switch_user': '_exit', 'page': 'Inloggen'}) }}">Uitloggen</a>
+                {% else %}
+                    <a href="{{ path('logout') }}">Uitloggen</a>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        <div id="l">
+            <div class="locatie">
+                <h2>Locatie</h2>
+                <hr>
+                <a href="https://www.google.com/maps/place/Vlaskamp+3,+2592+AA+Den+Haag/@52.0875809,4.3423114,15.34z/data=!4m5!3m4!1s0x47c5b70ac9816991:0x8f5cdf0ea9d78ec8!8m2!3d52.0894346!4d4.346816"
+                   target="_blank" style="color:#F2E609">
+                    <img src="{{ asset('images/locatie.png') }}" width="200"/>
+                    <br/>
+                    Sporthal Overbosch<br/>
+                    Vlaskamp 3, Den Haag
+                </a>
+            </div>
+        </div>
+
+        <div id="c">
+            <div class="content">
+                {#<div id="inschrijven"><a href="{{ path('scores') }}" target="blank">Live scores volgen! &#187;</a></div>#}
+                {% block body %}{% endblock %}
+            </div>
+        </div>
+
+        <div id="s">
+            <div class="sponsor">
+                Sponsors
+                <hr/>
+                {% for sponsor in sponsors %}
+                    {% if sponsor.website %}
+                        <a href="{{ sponsor.website }}" target="_blank" style="text-decoration: none;">
+                    {% endif %}
+                    <img src="/uploads/sponsors/{{ sponsor.locatie }}"/>
+                    {% if sponsor.website %}
+                        </a>
+                    {% endif %}
+                    <br/>
+                    {% if loop.index != sponsors|length %}<br/>{% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div id="social">
+            <a href="https://www.facebook.com/thog" target="_blank"><img
+                        src="{{ asset('images/facebook.png') }}" width="30"/></a>
+        </div>
+
+        {% block javascripts %}
+
+        {% endblock %}
+    </div>
+</center>
+</body>
+</html>

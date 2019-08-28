@@ -1,0 +1,2 @@
+project_root: '{{ deploy_root }}/test.thog.nl'
+mailer_delivery_address: ['markmeijerman@gmail.com']

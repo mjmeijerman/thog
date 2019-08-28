@@ -1,0 +1,9 @@
+[webserver:children]
+webserver-production
+webserver-test
+
+[webserver-production]
+thog-production ansible_ssh_host=thog.nl
+
+[webserver-test]
+thog-test ansible_ssh_host=test.thog.nl

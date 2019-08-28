@@ -1,0 +1,2 @@
+project_root: '{{ deploy_root }}/thog.nl'
+mailer_delivery_address: ~

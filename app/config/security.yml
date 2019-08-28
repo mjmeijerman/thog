@@ -1,0 +1,41 @@
+security:
+    encoders:
+        AppBundle\Entity\User:
+            algorithm: bcrypt
+    providers:
+        db_provider:
+            entity:
+                class: AppBundle:User
+
+    role_hierarchy:
+        ROLE_INGELOGD:    [ROLE_USER]
+        ROLE_CONTACT:     [ROLE_INGELOGD]
+        ROLE_ADMIN:       [ROLE_INGELOGD, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_ORGANISATIE: [ROLE_INGELOGD, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_JURY:        [ROLE_INGELOGD]
+
+    firewalls:
+        dev:
+            pattern: ^/(_(profiler|wdt)|css|images|js)/
+            security: false
+
+        main:
+            pattern: ^/
+            http_basic: ~
+            provider: db_provider
+            anonymous:  true
+            form_login:
+                login_path: /login
+                check_path: /login_check
+                csrf_provider: security.csrf.token_manager
+                default_target_path: /pagina/Inloggen
+            switch_user: true
+
+            logout:
+                path:   /logout
+                target: /pagina/Inloggen
+
+            remember_me:
+                key:      "%secret%"
+                lifetime: 2419200 # 4 weeks in seconds
+                path:     /
