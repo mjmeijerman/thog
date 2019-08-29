@@ -350,6 +350,10 @@ class OrganisatieController extends BaseController
         $vloermuziek = [];
         $categorien  = ['Jeugd 2', 'Junior', 'Senior'];
         $niveaus     = [
+            'Div. 2',
+            'Div. 2 Za',
+            'Div. 2 Zo',
+            'Div. 2 Ma',
             'Div. 3',
             'Div. 3 Za',
             'Div. 3 Zo',
