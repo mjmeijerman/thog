@@ -3,7 +3,6 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use stdClass;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -36,14 +35,14 @@ class Vloermuziek
     private $file;
 
     /**
-     * @ORM\OneToOne(targetEntity="Turnster", mappedBy="vloermuziek", cascade={"persist"})
+     * @ORM\OneToOne(targetEntity="Turnster", mappedBy="vloermuziek", cascade={"persist", "remove"})
      * @var Turnster
      */
     private $turnster;
 
     public function getAll()
     {
-        $items          = new stdClass();
+        $items          = new \stdClass();
         $items->id      = $this->id;
         $items->locatie = $this->locatie;
         return $items;
@@ -74,10 +73,7 @@ class Vloermuziek
     {
         // get rid of the __DIR__ so it doesn't screw up
         // when displaying uploaded doc/image in the view.
-        return 'uploads/vloermuziek/' . $this->turnster->getScores()->getWedstrijddag() . '/wedstrijdronde_' .
-            $this->turnster->getScores()->getWedstrijdronde() . '/baan_' . $this->turnster->getScores()->getBaan() .
-            '/groep_' .
-            $this->getTurnster()->getScores()->getGroep();
+        return 'uploads/vloermuziek/';
     }
 
     /**
@@ -145,9 +141,9 @@ class Vloermuziek
     public function preUpload()
     {
         if (null !== $this->getFile()) {
-            $filename      = $this->turnster->getScores()->getWedstrijdnummer() . '_' . $this->turnster->getVoornaam(
+            $filename      = $this->turnster->getVoornaam(
                 ) . '_' .
-                $this->turnster->getAchternaam();
+                $this->turnster->getAchternaam() . '_' . $this->turnster->getid();
             $this->locatie = $filename . '.' . $this->getFile()->getClientOriginalExtension();
         }
     }
