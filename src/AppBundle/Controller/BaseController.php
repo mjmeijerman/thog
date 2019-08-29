@@ -43,7 +43,7 @@ class BaseController extends Controller
     const BEDRAG_PER_TURNSTER             = 17.50;
     const JURY_BOETE_BEDRAG               = 50;
     const AANTAL_TURNSTERS_PER_JURY       = 10;
-    const DATE_TOURNAMENT                 = '1 & 2 juni 2019';
+    const DATE_TOURNAMENT                 = '1 & 2 juni 2020';
     const LOCATION_TOURNAMENT             = 'Sporthal Overbosch';
     const REKENINGNUMMER                  = 'NL81 INGB 000 007 81 99';
     const REKENING_TNV                    = 'Gymnastiekver. Donar';
@@ -293,15 +293,14 @@ class BaseController extends Controller
     protected function getGroepen()
     {
         return [
-            'Voorinstap'   => ['D1', 'D2'],
-            '(Voor)instap' => ['N2', 'N3'],
-            'Instap'       => ['D1', 'D2'],
-            'Pupil 1'      => ['N3', 'D1', 'D2'],
-            'Pupil 2'      => ['N3', 'D1', 'D2'],
-            'Jeugd 1'      => ['N4', 'D1', 'D2'],
-            'Jeugd 2'      => ['Div. 3', 'Div. 4', 'Div. 5'],
-            'Junior'       => ['Div. 3', 'Div. 4', 'Div. 5'],
-            'Senior'       => ['Div. 3', 'Div. 4', 'Div. 5'],
+            'Voorinstap'   => ['N2', 'N3'],
+            'instap' => ['N2', 'N3'],
+            'Pupil 1'      => ['N2', 'N3'],
+            'Pupil 2'      => ['N2', 'N3'],
+            'Jeugd 1'      => ['N2', 'N3', 'N4'],
+            'Jeugd 2'      => ['Div. 2', 'Div. 3'],
+            'Junior'       => ['Div. 2', 'Div. 3'],
+            'Senior'       => ['Div. 2', 'Div. 3'],
         ];
     }
 
@@ -371,13 +370,13 @@ class BaseController extends Controller
         if ($leeftijd < 8) {
             return [];
         } elseif ($leeftijd == 8 || $leeftijd == 9) {
-            return ['N2', 'N3', 'D1', 'D2'];
+            return ['N2', 'N3'];
         } elseif ($leeftijd == 10 || $leeftijd == 11) {
-            return ['N3', 'D1', 'D2'];
+            return ['N2', 'N3'];
         } elseif ($leeftijd == 12) {
-            return ['N4', 'D1', 'D2'];
+            return ['N2', 'N3', 'N4'];
         } else {
-            return ['Div. 3', 'Div. 4', 'Div. 5'];
+            return ['Div. 2', 'Div. 3'];
         }
     }
 

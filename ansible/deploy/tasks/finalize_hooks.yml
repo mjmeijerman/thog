@@ -18,33 +18,33 @@
   acl: name={{ item.name }} entity={{ nginx_user }} etype=user permissions=rwx default=yes state=present
   with_items: "{{ web_writable_folders }}"
 
-- name: Make app/cache writable
-  command: setfacl -R -m u:"www-data":rwX -m u:"{{ deploy_user }}":rwX app/cache
+- name: Make var/cache writable
+  command: setfacl -R -m u:"www-data":rwX -m u:"{{ deploy_user }}":rwX var/cache
   args:
     chdir: "{{ deploy_helper.new_release_path }}"
 
-- name: Make app/cache writable
-  command: setfacl -dR -m u:"www-data":rwX -m u:"{{ deploy_user }}":rwX app/cache
+- name: Make var/cache writable
+  command: setfacl -dR -m u:"www-data":rwX -m u:"{{ deploy_user }}":rwX var/cache
   args:
     chdir: "{{ deploy_helper.new_release_path }}"
 
-- name: Make app/logs writable
-  command: setfacl -R -m u:"www-data":rwX -m u:"{{ deploy_user }}":rwX app/logs
+- name: Make var/logs writable
+  command: setfacl -R -m u:"www-data":rwX -m u:"{{ deploy_user }}":rwX var/logs
   args:
     chdir: "{{ deploy_helper.new_release_path }}"
 
-- name: Make app/logs writable
-  command: setfacl -dR -m u:"www-data":rwX -m u:"{{ deploy_user }}":rwX app/logs
+- name: Make var/logs writable
+  command: setfacl -dR -m u:"www-data":rwX -m u:"{{ deploy_user }}":rwX var/logs
   args:
     chdir: "{{ deploy_helper.new_release_path }}"
 
-- name: Make app/sessions writable
-  command: setfacl -R -m u:"www-data":rwX -m u:"{{ deploy_user }}":rwX app/sessions
+- name: Make var/sessions writable
+  command: setfacl -R -m u:"www-data":rwX -m u:"{{ deploy_user }}":rwX var/sessions
   args:
     chdir: "{{ deploy_helper.new_release_path }}"
 
-- name: Make app/sessions writable
-  command: setfacl -dR -m u:"www-data":rwX -m u:"{{ deploy_user }}":rwX app/sessions
+- name: Make var/sessions writable
+  command: setfacl -dR -m u:"www-data":rwX -m u:"{{ deploy_user }}":rwX var/sessions
   args:
     chdir: "{{ deploy_helper.new_release_path }}"
 
