@@ -1,8 +1,18 @@
+@font-face {
+	font-family: Roboto-C-L;
+	src: url(../fonts/RobotoCondensed-Light.ttf);
+}
+
+@font-face {
+	font-family: OpenSans-L;
+	src: url(../fonts/OpenSans-Light.ttf);
+}
+
 body {
-	background: #C1C1C1 url(../images/background4.jpg) no-repeat; /* Blur-> unfocus 4 || opacity: 50 zwart */
+	background: #C1C1C1 url(../images/background6.jpg) no-repeat; /* Blur-> unfocus 4 || opacity: 50 zwart */
 	background-size: cover;
 	background-attachment: fixed;
-	font-family: Verdana, Calibri;
+	font-family: 'OpenSans-L', Calibri, Verdana;
 	min-height: 100vh;
 	margin: 0;
 }
@@ -61,7 +71,6 @@ body {
 
 #l:hover {
 	background: rgba(0,0,0,0.5);
-	color: #FFFF00;
 	box-shadow: 0px 0px 5px #000;
 }
 
@@ -77,6 +86,8 @@ body {
 	margin-bottom: 10px;
 	font-size: 12pt;
 	font-weight: normal;
+	font-family: 'Roboto-C-L', Calibri, Verdana;
+	text-transform: uppercase;
 }
 
 .locatie hr {
@@ -84,6 +95,10 @@ body {
 	height: 1px;
 	border: 0px;
 	width: 200px;
+}
+
+.locatie img {
+	margin-bottom: .5em;
 }
 
 /* CONTENT */
@@ -161,10 +176,10 @@ body {
 }
 
 .content #inschrijven a:link, .content #inschrijven a:visited {
-	background: #333;
+	background: #f5248e;
 	padding: .4em .8em;
 	border-radius: 5px;
-	color: #FFFF00;
+	color: #FFF;
 	text-decoration: none;
 	float: right;
 	box-shadow: 2px 2px 2px #000;
@@ -181,18 +196,24 @@ body {
 .content #inschrijven a:hover, .content #inschrijven a:active {
 	margin-right: 15px; /* Of niet */
 	margin-top: 0px; /* Of niet */
-	background: #F2E609;
-	color: #333;
+	background: #5f63fd;
+	color: #FFF;
 	box-shadow: 8px 8px 20px #333; /* Of 2px 2px 2px #333 */
 }
 
 .content a:link, .content a:visited {
-	color: blue;
-	text-decoration: underline;
+	color: #F5248E;
+	text-decoration: none;
+
+	-o-transition: .3s;
+	-ms-transition: .3s;
+	-moz-transition: .3s;
+	-webkit-transition: .3s;
+	transition: .3s;
 }
 
 .content a:hover, .content a:active {
-	color: #000;
+	color: #5F63FD;
 }
 
 /* WEDSTRIJDINDELING PAGINA */
@@ -312,7 +333,7 @@ body {
 	margin-bottom: .7em;
 	font-weight: normal;
 	font-size: 1.1em;
-	background: #C1C1C1;
+	background: #5f63fd;
 	padding: .4em .5em;
 	border-radius: 5px;
 }
@@ -608,6 +629,7 @@ body {
 }
 
 .content #reserveer_button {
+	margin: auto;
 	display: block;
 	padding: .4em 1em;
 	border-radius: 5px;
@@ -1186,9 +1208,9 @@ body {
 
 #logout a:link, #logout a:visited {
 	width: 100px;
-	color: #000;
+	color: #FFF;
 	display: block;
-	background: #E5E109; /* #212121 */
+	background: #f5248e; /* #212121 */
 	border-radius: 5px;
 	padding: .3em 0;
 	text-decoration: none;
@@ -1201,8 +1223,8 @@ body {
 }
 
 #logout a:hover, #logout a:active {
-	background: #212121; /* E5E109 */
-	color: #FFFF00;
+	background: #5f63fd; /* E5E109 */
+	color: #FFF;
 }
 
 /* JURY TOEVOEGEN KNOP */
@@ -1236,6 +1258,8 @@ body {
 /* SPONSOREN */
 
 #s {
+	font-family: 'Roboto-C-L', Calibri, Verdana;
+	text-transform: uppercase;
 	background: rgba(255,255,255,0.4);
 	color: #FFF;
 	width: 150px;
@@ -1507,6 +1531,8 @@ body {
 	float: left;
 	border-radius: 5px;
 	font-size: 11pt;
+	font-family: 'Roboto-C-L', Calibri, Verdana;
+	text-transform: uppercase;
 }
 
 #primary_nav_wrap ul
@@ -1521,7 +1547,7 @@ body {
 #primary_nav_wrap ul a
 {
 	display: block;
-	color: #FFFF00;
+	color: #FFF;
 	text-decoration:none;
 	line-height:35px;
 	padding:0 15px;
@@ -1562,6 +1588,7 @@ body {
 	padding:0;
 	border-radius: 5px;
 	border-top-left-radius: 0px;
+	text-transform: initial;
 	
 	-webkit-animation: fadein .5s; /* Safari, Chrome and Opera > 12.1 */
     -moz-animation: fadein .5s; /* Firefox < 16 */

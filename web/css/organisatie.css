@@ -1,5 +1,5 @@
 body {
-	background: url(../images/organisatie_background_logo.png) left no-repeat, #BFBFBF url(../images/organisatie_background_logo_donar.png) right no-repeat;	background-size: 25%;
+	background: url(../images/background6.jpg);
 	background-attachment: fixed;
     font-family: Calibri;
 }
@@ -13,8 +13,19 @@ body {
     overflow: hidden;
 }
 
-a:visited {
-    color: blue;
+a:link, a:visited {
+    color: #f5248e;
+    text-decoration: none;
+
+    -o-transition: .3s;
+    -ms-transition: .3s;
+    -moz-transition: .3s;
+    -webkit-transition: .3s;
+    transition: .3s;
+}
+
+a:hover, a:active {
+    color: #5f63fd;
 }
 
 /* ERROR */
@@ -126,7 +137,7 @@ header h2 {
 /* MENU */
 
 #menu {
-    background: #F2E609;
+    background: #f5248e;
     font-size: 12pt;
     padding-left: 1em;
     padding-right: 1em;
@@ -138,7 +149,7 @@ header h2 {
 }
 
 #menu a:link, #menu a:visited {
-    color: #000;
+    color: #FFF;
     text-decoration: none;
     display: inline-block;
     padding: .6em 1em;
@@ -153,14 +164,14 @@ header h2 {
 }
 
 #menu a:hover, #menu a:active {
-    background: #CCBE08;
+    background: rgba(0,0,0,.4);
     color: #FFF;
 }
 
 /* NOTIFICATION & STATISTIEK*/
 
 #statistiek {
-    background: #C1C1C1;
+    background: rgba(95, 99, 253, 0.6);
     display: block;
     text-align: center;
     padding-left: .1em;
