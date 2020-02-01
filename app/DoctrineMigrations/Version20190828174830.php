@@ -15,7 +15,6 @@ INSERT INTO `hoofdmenuitems` (`naam`, `positie`)
 VALUES
 	('Laatste nieuws', 1),
 	('Wedstrijdinformatie', 2),
-	('Sponsors', 3),
 	('Contact', 4),
 	('Inloggen', 5);
 EOQ;
@@ -75,6 +74,7 @@ VALUES
 	('Reglementen', 2, 2),
 	('Wedstrijdindeling', 3, 2),
 	('Uitslagen', 5, 2);
+	('Live scores', 6, 2);
 EOQ;
 
         $this->addSql($sql);
