@@ -11,6 +11,7 @@ use AppBundle\Entity\TurnsterRepository;
 use AppBundle\Entity\User;
 use AppBundle\Entity\Vloermuziek;
 use Exception;
+use Ramsey\Uuid\Uuid as RamseyUuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
@@ -661,6 +662,7 @@ class ContactpersoonController extends BaseController
                             $jurylid->setVoornaam(trim($request->request->get('voornaam')));
                             $jurylid->setAchternaam(trim($request->request->get('achternaam')));
                             $jurylid->setEmail($request->request->get('email'));
+                            $jurylid->setConfirmationId(RamseyUuid::uuid4()->toString());
                             $jurylid->setPhoneNumber($request->request->get('phone_number'));
                             $jurylid->setBrevet($request->request->get('brevet'));
                             $jurylid->setOpmerking($request->request->get('opmerking'));

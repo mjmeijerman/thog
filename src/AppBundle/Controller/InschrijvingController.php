@@ -9,6 +9,7 @@ use AppBundle\Entity\User;
 use AppBundle\Entity\Vereniging;
 use AppBundle\Entity\Voorinschrijving;
 use DateTime;
+use Ramsey\Uuid\Uuid as RamseyUuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
@@ -88,6 +89,7 @@ class InschrijvingController extends BaseController
                                 $jurylid = new Jurylid();
                                 $jurylid->setVoornaam(trim($request->request->get('jury_voornaam_' . $i)));
                                 $jurylid->setAchternaam(trim($request->request->get('jury_achternaam_' . $i)));
+                                $jurylid->setConfirmationId(RamseyUuid::uuid4()->toString());
                                 $jurylid->setEmail($request->request->get('jury_email_' . $i));
                                 $jurylid->setPhoneNumber($request->request->get('jury_phone_number_' . $i));
                                 $jurylid->setBrevet($request->request->get('jury_brevet_' . $i));

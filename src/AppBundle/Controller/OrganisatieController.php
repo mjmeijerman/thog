@@ -15,6 +15,8 @@ use AppBundle\Entity\UserRepository;
 use AppBundle\Entity\Voorinschrijving;
 use DateTime;
 use Exception;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\Uuid as RamseyUuid;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -234,6 +236,7 @@ class OrganisatieController extends BaseController
 
                 $jurylid = new Jurylid();
                 $jurylid->setEmail($request->request->get('juryEmail'));
+                $jurylid->setConfirmationId(RamseyUuid::uuid4()->toString());
                 $jurylid->setPhoneNumber($request->request->get('juryPhoneNumber'));
                 $jurylid->setVoornaam($request->request->get('juryVoornaam'));
                 $jurylid->setAchternaam($request->request->get('juryAchternaam'));
@@ -351,21 +354,7 @@ class OrganisatieController extends BaseController
         $categorien  = ['Jeugd 2', 'Junior', 'Senior'];
         $niveaus     = [
             'Div. 2',
-            'Div. 2 Za',
-            'Div. 2 Zo',
-            'Div. 2 Ma',
             'Div. 3',
-            'Div. 3 Za',
-            'Div. 3 Zo',
-            'Div. 3 Ma',
-            'Div. 4',
-            'Div. 4 Za',
-            'Div. 4 Zo',
-            'Div. 4 Ma',
-            'Div. 5',
-            'Div. 5 Za',
-            'Div. 5 Zo',
-            'Div. 5 Ma',
         ];
 
         foreach ($categorien as $categorie) {
