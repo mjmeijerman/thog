@@ -586,10 +586,12 @@ class BaseController extends Controller
         }
 
         foreach ($this->menuItems as &$menuItem) {
-            if (isset($menuItem['submenuItems'])) {
-                foreach ($menuItem['submenuItems'] as &$submenuItem) {
-                    if ($submenuItem['naam'] === 'Live scores' || $submenuItem['naam'] === 'Uitslagen') {
-                        $submenuItem['jurysysteemUrl'] = $this->getParameter('jurysysteem_url');
+            if(is_array($menuItem)) {
+                if (isset($menuItem['submenuItems'])) {
+                    foreach ($menuItem['submenuItems'] as &$submenuItem) {
+                        if ($submenuItem['naam'] === 'Live scores' || $submenuItem['naam'] === 'Uitslagen') {
+                            $submenuItem['jurysysteemUrl'] = $this->getParameter('jurysysteem_url');
+                        }
                     }
                 }
             }
