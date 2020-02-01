@@ -40,12 +40,12 @@ class BaseController extends Controller
     const UITERLIJKE_BETAALDATUM_FACTUUR  = 'Uiterlijke betaaldatum';
     const MAX_AANTAL_TURNSTERS            = 'Max aantal turnsters';
     const EMPTY_RESULT                    = 'Klik om te wijzigen';
-    const BEDRAG_PER_TURNSTER             = 17.50;
-    const JURY_BOETE_BEDRAG               = 50;
+    const BEDRAG_PER_TURNSTER             = 20.00;
+    const JURY_BOETE_BEDRAG               = 100;
     const AANTAL_TURNSTERS_PER_JURY       = 10;
-    const DATE_TOURNAMENT                 = '1 & 2 juni 2020';
+    const DATE_TOURNAMENT                 = '4 & 5 juli 2020';
     const LOCATION_TOURNAMENT             = 'Sporthal Overbosch';
-    const REKENINGNUMMER                  = 'NL81 INGB 000 007 81 99';
+    const REKENINGNUMMER                  = 'NL51 INGB 000 650 00 42';
     const REKENING_TNV                    = 'Gymnastiekver. Donar';
 
     const TOURNAMENT_FULL_NAME       = 'The Hague Open Gymnastics';
