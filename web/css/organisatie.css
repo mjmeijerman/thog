@@ -260,10 +260,10 @@ article #mails td {
 /* INSCHRIJVINGEN PAGINA */
 
 article .cat {
-    background: rgba(255, 255, 0, 0.55);
+    background: rgba(245, 36, 142, 0.4);
     font-size: 12pt;
     width: 100px;
-    color: #000;
+    color: #FFF;
     border-radius: 5px;
     text-decoration: none;
     padding: 3px;
@@ -272,7 +272,7 @@ article .cat {
 }
 
 article .niv {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(95, 99, 253, 0.2);
     font-size: 12pt;
     width: 100px;
     color: #FFFF00;
@@ -332,7 +332,7 @@ article .inschrijvingen .vrij {
 
 article .inschrijvingen_status a:link, article .inschrijvingen_status a:visited {
 	display: block;
-	color: #FFFF00;
+	color: #f5248e;
 	text-decoration: none;
 }
 
