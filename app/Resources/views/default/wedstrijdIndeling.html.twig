@@ -14,6 +14,11 @@
 
         Er is nog geen algemeen tijdschema beschikbaar.
     {% endif %}
+    {% if dagen is empty %}
+        <h4>» Wedstrijdindeling</h4>
+
+        Er zijn nog geen wedstrijdindelingen beschikbaar.
+    {% endif %}
     {% for dag in dagen %}
         <h4 id="contact">» {{ dag.wedstrijddag }}</h4>
         <table class="wedstrijdindeling">
