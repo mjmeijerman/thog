@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AppBundle\Controller;
 
+use AppBundle\Entity\Jurylid;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -14,35 +15,45 @@ final class JuryController extends BaseController
      */
     public function confirmJudge(Request $request, $confirmationId)
     {
-        $this->setBasicPageData('Organisatie');
-        $result = $this->getDoctrine()
-            ->getRepository('AppBundle:User')
-            ->findOneBy(
-                array('id' => $id)
-            );
-        if ($result) {
-            if ($request->getMethod() == 'POST') {
-                if ($request->request->get('bevestig')) {
-                    $this->removeFromDB($result);
-                    return $this->redirectToRoute('organisatieGetContent', ['page' => 'Inschrijvingen']);
-                }
-            }
-            $contactpersoon = [
-                'naam'       => $result->getVoornaam() . ' ' . $result->getAchternaam(),
-                'vereniging' => $result->getVereniging()->getNaam() . ', ' . $result->getVereniging()->getPlaats(),
-            ];
+        $this->setBasicPageData();
+
+        /** @var Jurylid $juryLid */
+        $juryLid = $this->getDoctrine()->getRepository(Jurylid::class)->findOneBy(['confirmationId' => $confirmationId]);
+        if (!$juryLid) {
             return $this->render(
-                'organisatie/removeContactpersoon.html.twig',
+                'jury/not_found.html.twig',
                 array(
-                    'menuItems'                       => $this->menuItems,
-                    'contactpersoon'                  => $contactpersoon,
-                    'totaalAantalVerenigingen'        => $this->aantalVerenigingen,
-                    'totaalAantalTurnsters'           => $this->aantalTurnsters,
-                    'totaalAantalTurnstersWachtlijst' => $this->aantalWachtlijst,
-                    'totaalAantalJuryleden'           => $this->aantalJury,
+                    'menuItems'           => $this->menuItems,
+                    'sponsors'            => $this->sponsors,
                 )
             );
         }
-        return $this->redirectToRoute('organisatieGetContent', ['page' => 'Inschrijvingen']);
+
+        if ($request->getMethod() === 'POST') {
+
+            // todo: gegevens opslaan
+            // todo: confirmed op true zetten
+            // todo: email sturen naar jurylid ter bevestiging
+
+            return $this->redirectToRoute('getIndexPage');
+        }
+
+        if ($juryLid->getIsConfirmed()) {
+            return $this->render(
+                'jury/allready_confirmed.html.twig',
+                array(
+                    'menuItems'           => $this->menuItems,
+                    'sponsors'            => $this->sponsors,
+                )
+            );
+        }
+
+        return $this->render(
+            'jury/confirm.html.twig',
+            array(
+                'menuItems'           => $this->menuItems,
+                'sponsors'            => $this->sponsors,
+            )
+        );
     }
 }

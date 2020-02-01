@@ -687,6 +687,7 @@ class ContactpersoonController extends BaseController
                                 'vereniging'     => $user->getVereniging()->getNaam() . ', ' .
                                     $user->getVereniging()->getPlaats(),
                                 'contactEmail'   => $user->getEmail(),
+                                'confirmationUrl' => sprintf(self::TOURNAMENT_WEBSITE_URL) . '/jury/bevestig/' . $jurylid->getConfirmationId(),
                             ];
                             $this->sendEmail($subject, $to, $view, $parameters);
 

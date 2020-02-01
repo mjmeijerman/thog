@@ -297,12 +297,12 @@ class Jurylid
         return $this->maandag;
     }
 
-    public function setConfirmationId($confirmationId)
+    public function setConfirmationId($confirmationId): void
     {
         $this->confirmationId = $confirmationId;
     }
 
-    public function getConfirmationId(): void
+    public function getConfirmationId()
     {
         return $this->confirmationId;
     }
