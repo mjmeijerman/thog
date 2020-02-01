@@ -297,7 +297,7 @@ class BaseController extends Controller
             'Instap'     => ['N2', 'N3'],
             'Pupil 1'    => ['N2', 'N3'],
             'Pupil 2'    => ['N2', 'N3'],
-            'Jeugd 1'    => ['N2', 'N3', 'N4'],
+            'Jeugd 1'    => ['N3', 'N4'],
             'Jeugd 2'    => ['Div. 2', 'Div. 3'],
             'Junior'     => ['Div. 2', 'Div. 3'],
             'Senior'     => ['Div. 2', 'Div. 3'],
@@ -372,7 +372,7 @@ class BaseController extends Controller
         } elseif ($leeftijd == 10 || $leeftijd == 11) {
             return ['N2', 'N3'];
         } elseif ($leeftijd == 12) {
-            return ['N2', 'N3', 'N4'];
+            return ['N3', 'N4'];
         } else {
             return ['Div. 2', 'Div. 3'];
         }
