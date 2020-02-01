@@ -1264,7 +1264,7 @@ body {
 	font-family: 'Roboto-C-L', Calibri, Verdana;
 	text-transform: uppercase;
 	background: rgba(255,255,255,0.4);
-	color: #FFF;
+	color: #f5248e;
 	width: 150px;
 	float: left;
 	margin-left: 0;
@@ -1284,7 +1284,7 @@ body {
 }
 
 .sponsor {
-	color: #FFF;
+	color: #f5248e;
 	text-align: center;
 	margin-top: 5px;
 	margin-left: 5px;
@@ -1293,7 +1293,7 @@ body {
 }
 
 .sponsor hr {
-	background: #FFF;
+	background: #f5248e;
 	height: 1px;
 	border: 0px;
 	width: 130px;
@@ -1550,7 +1550,7 @@ body {
 #primary_nav_wrap ul a
 {
 	display: block;
-	color: #FFF;
+	color: #f5248e;
 	text-decoration:none;
 	line-height:35px;
 	padding:0 15px;
@@ -1574,13 +1574,12 @@ body {
 
 #primary_nav_wrap ul li:hover
 {
-	background: rgba(0,0,0,0.6);
+	background: rgba(255,255,255,0.6);
 	/* background:#C1C1C1; */
 }
 
 #primary_nav_wrap ul ul
 {
-	color: #FF0000;
 	text-align: left;
 	display:none;
 	position:absolute;
@@ -1623,6 +1622,7 @@ body {
 {
 	line-height:120%;
 	padding:10px 15px;
+	color: #FFF;
 }
 
 #primary_nav_wrap ul ul ul
