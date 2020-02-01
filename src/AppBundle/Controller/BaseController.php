@@ -584,6 +584,16 @@ class BaseController extends Controller
         foreach ($results as $result) {
             $this->menuItems[] = $result->getAll();
         }
+
+        foreach ($this->menuItems as &$menuItem) {
+            if (isset($menuItem['submenuItems'])) {
+                foreach ($menuItem['submenuItems'] as &$submenuItem) {
+                    if ($submenuItem['naam'] === 'Scores' || $submenuItem['naam'] === 'Uitslagen') {
+                        $submenuItem['jurysysteemUrl'] = $this->getParameter('jurysysteem_url');
+                    }
+                }
+            }
+        }
     }
 
     private function setStatistieken()

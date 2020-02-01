@@ -67,7 +67,9 @@
                                 {% for submenuItem in menuItem.submenuItems %}
                                     <li {% if loop.index == menuItem.submenuItems|length %}id="last"{% endif %}>
                                         {% if submenuItem.naam == 'Uitslagen' %}
-                                            <a href="{{ path('uitslagen') }}" target="_blank">{{ submenuItem.naam }}</a>
+                                            <a href="{{ submenuItem.jurysysteemUrl }}/uitslagen" target="_blank">{{ submenuItem.naam }}</a>
+                                        {% elseif submenuItem.naam == 'Scores' %}
+                                            <a href="{{ submenuItem.jurysysteemUrl }}/scores" target="_blank">{{ submenuItem.naam }}</a>
                                         {% else %}
                                             <a href="{{ path('getContent', { 'page': submenuItem.naam }) }}">{{ submenuItem.naam }}</a>
                                         {% endif %}
