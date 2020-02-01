@@ -9,7 +9,7 @@
 }
 
 body {
-	background: #C1C1C1 url(../images/background6.jpg) no-repeat; /* Blur-> unfocus 4 || opacity: 50 zwart */
+	background: #C1C1C1 url(../images/background5.jpg) no-repeat; /* Blur-> unfocus 4 || opacity: 50 zwart */
 	background-size: cover;
 	background-attachment: fixed;
 	font-family: 'OpenSans-L', Calibri, Verdana;
@@ -365,12 +365,11 @@ body {
 
 .content #factuur:link, .content #factuur:visited {
 	color: #FFF;
-	width: 11.5em;
 	margin-top: 1.3em;
 	font-size: 1.1em;
-	background: #FF4747;
+	background: #ff2c2a;
 	display: inline-block;
-	padding: .4em .5em;
+	padding: .4em .7em;
 	border-radius: 5px;
 	text-decoration: none;
 	-o-transition: .3s;
@@ -382,7 +381,7 @@ body {
 
 .content #factuur:hover, .content #factuur:active {
 	color: #FFF;
-	background: #333;
+	background: #5f63fd;
 }
 
 .content #factuur_deel:link, .content #factuur_deel:visited {
@@ -390,7 +389,7 @@ body {
 	width: 11.5em;
 	margin-top: 1.3em;
 	font-size: 1.1em;
-	background: orange;
+	background: #ff8300;
 	display: inline-block;
 	padding: .4em .5em;
 	border-radius: 5px;
@@ -404,7 +403,7 @@ body {
 
 .content #factuur_deel:hover, .content #factuur_deel:active {
 	color: #FFF;
-	background: #333;
+	background: #5f63fd;
 }
 
 .content #factuur_voldaan:link, .content #factuur_voldaan:visited {
@@ -426,7 +425,7 @@ body {
 
 .content #factuur_voldaan:hover, .content #factuur_voldaan:active {
 	color: #FFF;
-	background: #333;
+	background: #5f63fd;
 }
 
 .content #indeling:link, .content #indeling:visited {
@@ -435,7 +434,7 @@ body {
 	font-size: 1.1em;
 	background: #333;
 	display: inline-block;
-	padding: .4em .5em;
+	padding: .4em .7em;
 	border-radius: 5px;
 	text-decoration: none;
 	-o-transition: .3s;
@@ -446,7 +445,8 @@ body {
 }
 
 .content #indeling:hover, .content #indeling:active {
-	color: #FFFF00;
+	background: #5f63fd;
+	color: #FFF;
 }
 
 .content #deelnemers {
