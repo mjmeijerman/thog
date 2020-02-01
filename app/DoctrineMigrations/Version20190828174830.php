@@ -2,13 +2,13 @@
 
 namespace Application\Migrations;
 
-use Doctrine\DBAL\Migrations\AbstractMigration;
+use Doctrine\Migrations\AbstractMigration;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\DBAL\Types\Type;
 
 class Version20190828174830 extends AbstractMigration
 {
-    public function up(Schema $schema)
+    public function up(Schema $schema): void
     {
         $sql = <<<EOQ
 INSERT INTO `hoofdmenuitems` (`naam`, `positie`)
@@ -80,7 +80,7 @@ EOQ;
         $this->addSql($sql);
     }
 
-    public function down(Schema $schema)
+    public function down(Schema $schema): void
     {
     }
 }
