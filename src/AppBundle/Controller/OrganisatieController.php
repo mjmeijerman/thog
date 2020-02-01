@@ -261,6 +261,26 @@ class OrganisatieController extends BaseController
 
                 $this->addToDB($user);
 
+                $subject    = 'Aanmelding ' . BaseController::TOURNAMENT_FULL_NAME;
+                $to         = $jurylid->getEmail();
+                $view       = 'mails/inschrijven_jurylid.txt.twig';
+                $parameters = [
+                    'voornaam'       => $jurylid->getVoornaam(),
+                    'achternaam'     => $jurylid->getAchternaam(),
+                    'contactpersoon' => $user->getVoornaam() . ' ' . $user->getAchternaam(),
+                    'vereniging'     => $user->getVereniging()->getNaam() . ', ' .
+                        $user->getVereniging()->getPlaats(),
+                    'contactEmail'   => $user->getEmail(),
+                    'confirmationUrl' => sprintf(self::TOURNAMENT_WEBSITE_URL) . '/jury/bevestig/' . $jurylid->getConfirmationId(),
+                ];
+                $this->sendEmail(
+                    $subject,
+                    $to,
+                    $view,
+                    $parameters,
+                    BaseController::TOURNAMENT_CONTACT_EMAIL
+                );
+
                 $this->addFlash('success', 'Jurylid succesvol toegevoegd');
                 return $this->redirectToRoute('organisatieGetContent', ['page' => $page]);
             } else {
