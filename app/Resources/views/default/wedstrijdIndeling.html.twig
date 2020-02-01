@@ -3,12 +3,16 @@
 {% block body %}
     <h1>Wedstrijdindeling</h1>
     {% if tijdSchema%}
-        <h4 id="contact">» Tijdschema</h4>
+        <h4>» Tijdschema</h4>
         <p>
             Het tijdschema kan
             <a href="/uploads/tijdSchema/tijdSchema.pdf" target="_blank">
                 hier</a> worden ingezien.
         </p>
+    {% else %}
+        <h4>» Tijdschema</h4>
+
+        Er is nog geen algemeen tijdschema beschikbaar.
     {% endif %}
     {% for dag in dagen %}
         <h4 id="contact">» {{ dag.wedstrijddag }}</h4>
@@ -37,11 +41,15 @@
         </table>
     {% endfor %}
 	{% if juryIndeling %}
-        <h4 id="contact">» Juryindeling</h4>
+        <h4>» Juryindeling</h4>
         <p>
             De juryindeling kan
             <a href="/uploads/juryIndeling/juryIndeling.pdf" target="_blank">
                 hier</a> worden ingezien.
         </p>
+    {% else %}
+        <h4>» Juryindeling</h4>
+
+        Er is nog geen juryindeling beschikbaar.
     {% endif %}
 {% endblock %}
