@@ -98,15 +98,17 @@
                             <!-- vergeet de spatie niet -->
                             <input type="text" class="jury_veld" id="achternaam" placeholder="Achternaam"
                                    name="jury_achternaam_{{ i }}"/>
-                            <!-- vergeet de spatie niet -->
-                            <input type="text" class="jury_veld" id="email" placeholder="jurylid@email.com"
+                        </div>
+                        <div class="row_turnster">
+                            <input type="text" class="jury_veld marginleft" id="email" placeholder="jurylid@email.com"
                                    name="jury_email_{{ i }}"/>
                             <!-- vergeet de spatie niet -->
                             <input type="text" class="jury_veld" id="phone_number" placeholder="0612345678"
                                    name="jury_phone_number_{{ i }}"/>
                             <!-- vergeet de spatie niet -->
-                            <br/>
-                            <select class="jury_brevet" name="jury_brevet_{{ i }}">
+                        </div>
+                        <div class="row_turnster">
+                            <select class="jury_brevet marginleft" name="jury_brevet_{{ i }}">
                                 <option value="" selected>Brevet</option>
                                 <option value="TD1">TD1</option>
                                 <option value="TD2">TD2</option>
@@ -131,16 +133,14 @@
                         href="/uploads/reglementen/Reglementen.pdf" target="_blank">Reglementen</a>
                 en hiermee akkoord gaat!
                 <input type="hidden" name="csrfToken" value="{{ csrfToken }}"/>
-                <br/><br/>
-                <center>
-                    <div id="controle_button" onclick="post_turnsters()">Ingevoerde turnsters en juryleden
-                        opslaan
+
+                    <div id="controle_button" onclick="post_turnsters()">
+                        Ingevoerde turnsters en juryleden opslaan
                     </div>
-                </center>
-                <br>
-                <center>
-                    <div id="controle_button" onclick="afsluiten()">Ik ben klaar met inschrijven!</div>
-                </center>
+                    <div id="controle_button" onclick="afsluiten()">
+                        Ik ben klaar met inschrijven!
+                    </div>
+
                 <input type="hidden" id="remove_session" name="remove_session"/>
         </form>
 
