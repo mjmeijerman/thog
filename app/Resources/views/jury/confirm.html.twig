@@ -1,5 +1,64 @@
 {% extends 'jury/base.html.twig' %}
 
 {% block body %}
-    Hier het formpje
+   <h1>Bevestigen aanmelding jurylid</h1>
+
+    <table class="aanpas_tabel">
+        <tr>
+            <td>
+                Voornaam
+            </td>
+            <td>
+                <!-- Input veld: <input type="text" class="jury_veld" placeholder="Voornaam" /> -->
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Achternaam
+            </td>
+            <td>
+                <!-- Input veld: <input type="text" class="jury_veld" placeholder="Achternaam" /> -->
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Brevet
+            </td>
+            <td>
+                <!-- Input veld:
+                    <select class="jury_brevet">
+                        <option value="" selected disabled>Brevet</option>
+                        <option value="TD2">TD2</option>
+                        <option value="TD3">TD3</option>
+                        <option value="TD4">TD4</option>
+                        <option value="TD5">TD5</option>
+                    </select>
+                 -->
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Telefoonnummer
+            </td>
+            <td>
+                <!-- Input veld:
+                    <input type="text" class="jury_veld" placeholder="0612345678" />
+                 -->
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Evt. opmerkingen
+            </td>
+            <td>
+                <!-- Input veld:
+                    <input type="text" class="jury_veld" placeholder="Opmerking hier" />
+                 -->
+            </td>
+        </tr>
+    </table>
+
+    <div id="controle_button" onclick="post_turnsters()">
+        Gegevens bevestigen
+    </div>
 {% endblock %}
