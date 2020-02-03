@@ -32,7 +32,7 @@ class OrganisatieController extends BaseController
 {
 
     /**
-     * @Route("/organisatie/{page}/", name="organisatieGetContent", defaults={"page" = "Mijn gegevens"}, methods={"GET"})
+     * @Route("/organisatie/{page}/", name="organisatieGetContent", defaults={"page" = "Mijn gegevens"}, methods={"GET", "POST"})
      * @param Request $request
      * @param         $page
      *
