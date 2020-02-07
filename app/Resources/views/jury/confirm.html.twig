@@ -2,8 +2,13 @@
 
 {% block body %}
     <h1>Bevestigen aanmelding jurylid</h1>
-    Geacht jurylid, je bent aangemeld om te jureren voor {{ jurylid.user.vereniging.naam }} {{ jurylid.user.vereniging.plaats }} op ons toernooi.
+    Geacht jurylid, <br />
+    <br />
+    Je bent aangemeld om te jureren voor {{ jurylid.user.vereniging.naam }} {{ jurylid.user.vereniging.plaats }} op ons toernooi.
     Wij willen je vragen om onderstaande gegevens te controleren en waar nodig aan te passen, en vervolgens je aanmelding te bevestigen.
+    <br />
+    <br />
+
     <form method="post" name="confirmJudge">
         <table class="aanpas_tabel">
             <tr>
@@ -67,13 +72,25 @@
             </tr>
         </table>
 
-        <input type="submit" value="Gegevens bevestigen"/>
+        <br />
+        <input type="submit" id="controle_button" value="Gegevens bevestigen"/>
 {#        <div id="controle_button">#}
 {#            Gegevens bevestigen#}
 {#        </div>#}
     </form>
 
+    <br />
+    <h4>» Ik heb me helemaal niet opgegeven als jurylid voor deze vereniging</h4>
+
+    <p>
+        Niet opgegeven als jurylid voor deze vereniging? Of zelfs helemaal niet?<br />
+        <br />
+        Klik dan op onderstaande knop om je te verwijderen uit ons systeem. Zowel organisatie als de betreffende vereniging worden hiervan op de hoogte gesteld.<br />
+        We raden je aan om zelf ook contact op te nemen met de vereniging.
+    </p>
+
+    <br />
     <form method="post" name="unsubscribeJudge" action="{{ path('unsubscribeJudge', {'confirmationId': confirmationId}) }}">
-        <input type="submit" value="Uitschrijfknop hiero"/>
+        <input type="submit" id="controle_button" value="Schrijf mij maar uit"/>
     </form>
 {% endblock %}
