@@ -706,6 +706,15 @@ body {
 	margin-left: 1.6em;
 }
 
+.content .bevestig_check {
+	max-width: 12px;
+	margin-left: .2em;
+}
+
+.content .img_padding {
+	padding: .2em .2em;
+}
+
 .content .jury_veld {
 	display: inline-block;
 	padding: .4em .5em;
