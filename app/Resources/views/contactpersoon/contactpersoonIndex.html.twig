@@ -335,7 +335,11 @@
         {% for jurylid in juryleden %}
             <tr>
                 <td>
-                    <img src="{{ asset('images/question.png') }}" class="bevestig_check" />
+                    {% if jurylid.isConfirmed %}
+                        <img src="{{ asset('images/correct.png') }}" class="bevestig_check" />
+                    {% else %}
+                        <img src="{{ asset('images/question.png') }}" class="bevestig_check" />
+                    {% endif %}
                 </td>
                 <td>
                     {{ loop.index }}

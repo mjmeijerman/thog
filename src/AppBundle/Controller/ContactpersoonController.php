@@ -107,12 +107,13 @@ class ContactpersoonController extends BaseController
         $juryObjecten = $user->getJurylid();
         foreach ($juryObjecten as $juryObject) {
             $juryleden[] = [
-                'id'         => $juryObject->getId(),
-                'voornaam'   => $juryObject->getVoornaam(),
-                'achternaam' => $juryObject->getAchternaam(),
-                'opmerking'  => $juryObject->getOpmerking(),
-                'brevet'     => $juryObject->getBrevet(),
-                'dag'        => $this->getBeschikbareDag($juryObject),
+                'id'          => $juryObject->getId(),
+                'voornaam'    => $juryObject->getVoornaam(),
+                'achternaam'  => $juryObject->getAchternaam(),
+                'opmerking'   => $juryObject->getOpmerking(),
+                'brevet'      => $juryObject->getBrevet(),
+                'dag'         => $this->getBeschikbareDag($juryObject),
+                'isConfirmed' => $juryObject->getIsConfirmed(),
             ];
         }
         $teLeverenJuryleden = ceil(count($turnsters) / 10);
