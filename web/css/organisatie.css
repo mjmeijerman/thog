@@ -264,7 +264,7 @@ article #mails td {
 
 /* INSCHRIJVINGEN PAGINA */
 article #indelingen_status table {
-	border-collapse: seperate;
+	border-collapse: separate;
 	border-spacing: .5em .5em;
     border-radius: 0;
 }
