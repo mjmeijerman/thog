@@ -321,6 +321,7 @@ class OrganisatieController extends BaseController
                     'opmerking'   => $result->getOpmerking(),
                     'email'       => $result->getEmail(),
                     'phoneNumber' => $result->getPhoneNumber(),
+                    'isConfirmed' => $result->getIsConfirmed(),
                 ];
             } else {
                 $juryledenNiet[] = [
@@ -333,6 +334,7 @@ class OrganisatieController extends BaseController
                     'opmerking'   => $result->getOpmerking(),
                     'email'       => $result->getEmail(),
                     'phoneNumber' => $result->getPhoneNumber(),
+                    'isConfirmed' => $result->getIsConfirmed(),
                 ];
             }
         }
