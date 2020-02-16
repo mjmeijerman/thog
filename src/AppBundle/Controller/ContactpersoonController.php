@@ -678,7 +678,7 @@ class ContactpersoonController extends BaseController
 
                             /** @var User $user */
                             $user       = $this->getUser();
-                            $subject    = 'Aanmelding ' . BaseController::TOURNAMENT_FULL_NAME;
+                            $subject    = 'Graag bevestigen: aanmelding ' . BaseController::TOURNAMENT_FULL_NAME;
                             $to         = $jurylid->getEmail();
                             $view       = 'mails/inschrijven_jurylid.txt.twig';
                             $parameters = [
