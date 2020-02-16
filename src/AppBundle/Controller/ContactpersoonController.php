@@ -157,6 +157,7 @@ class ContactpersoonController extends BaseController
                 'dagen'                         => $indelingen['dagen'],
                 'wedstrijdrondes'               => $indelingen['wedstrijdrondes'],
                 'categorieNiveau'               => $indelingen['categorieNiveau'],
+                'uitslagenUrl'                  => $this->getParameter('jurysysteem_url') . '/uitslagen/' . $user->getUsername(),
             )
         );
     }
