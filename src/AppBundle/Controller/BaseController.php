@@ -1151,7 +1151,7 @@ class BaseController extends Controller
 
                 $pdf->SetTextColor(0);
                 $pdf->Text(68,75,'10-10-2020');
-                $pdf->Text(68,81,'THOG2020-04');
+                $pdf->Text(68,81,$factuurNummer);
 
                 //CONTACTPERSOON & VERENIGING
                 $pdf->SetFontSize(16);
