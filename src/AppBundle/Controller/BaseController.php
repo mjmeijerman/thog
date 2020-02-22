@@ -1149,8 +1149,9 @@ class BaseController extends Controller
                 $pdf->Text(20,75, 'FACTUURDATUM');
                 $pdf->Text(20,81, 'FACTUURNUMMER');
 
+                $datumFactuur = $this->getOrganisatieInstellingen(self::FACTUUR_BEKIJKEN_TOEGESTAAN);
                 $pdf->SetTextColor(0);
-                $pdf->Text(68,75,'10-10-2020');
+                $pdf->Text(68,75,date('d-m-Y',strtotime($datumFactuur[self::FACTUUR_BEKIJKEN_TOEGESTAAN])));
                 $pdf->Text(68,81,$factuurNummer);
 
                 //CONTACTPERSOON & VERENIGING
@@ -1227,14 +1228,7 @@ class BaseController extends Controller
 
                 $pdf->SetFont('OpenSans','',11);
                 $pdf->Cell(20);
-                $pdf->Cell(0,6,'Wij verzoeken u vriendelijk het bovenstaande bedrag voor '.
-                    date(
-                        'd-m-Y',
-                        strtotime
-                        (
-                            $uitersteBetaalDatum[self::UITERLIJKE_BETAALDATUM_FACTUUR]
-                        )
-                    ).' over te maken naar',0,1);
+                $pdf->Cell(0,6,'Wij verzoeken u vriendelijk het bovenstaande bedrag voor '.date('d-m-Y',strtotime($uitersteBetaalDatum[self::UITERLIJKE_BETAALDATUM_FACTUUR])).' over te maken naar',0,1);
                 $pdf->Cell(20);
                 $pdf->Cell(0,6,'onze bankrekening:',0,1);
 
