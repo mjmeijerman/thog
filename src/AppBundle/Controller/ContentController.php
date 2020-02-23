@@ -249,7 +249,7 @@ class ContentController extends BaseController
     {
         $this->setBasicPageData();
         if ($request->getMethod() == 'POST') {
-            $username = $this->get('request')->request->get('username');
+            $username = $request->request->get('username');
             $user     = $this->getDoctrine()
                 ->getRepository('AppBundle:User')
                 ->loadUserByUsername($username);
