@@ -273,11 +273,12 @@ class UitslagenController extends BaseController
                 ];
             }
         }
-        $pdf = new JurybadgePdfController('L', 'mm', [85.6, 53.98]);
+        $pdf = new JurybadgePdfController('P', 'mm', [85.6, 53.98]);
         $pdf->setTournamentDate(self::DATE_TOURNAMENT);
         $pdf->SetMargins(0, 0);
         $pdf->AddFont('Gotham', '', 'Gotham-Light.php');
         $pdf->AddFont('Franklin', '', 'Frabk.php');
+        $pdf->AddFont('Barlow', '', 'Barlow-Regular.php');
         foreach ($juryleden as $jurylid) {
             $pdf->AddPage();
             $pdf->badgeContent($jurylid);
