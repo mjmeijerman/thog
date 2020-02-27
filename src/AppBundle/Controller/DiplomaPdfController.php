@@ -7,152 +7,79 @@ class DiplomaPdfController extends AlphaPDFController
     function HeaderDiploma()
     {
         //BACKGROUND
-        $this->Image('images/DiplomaBackground.png', 0, 0);    //BACKGROUND2: 0,45		BACKGROUND3: 17,77
-        //			$this->SetFillColor(127);
-        //			$this->Rect(0,0,210,35,'F');
-        //LOGO
-        $this->SetFillColor(0);
-        $this->SetAlpha(0.5);
-        $this->Rect(0, 0, 297, 35, 'F');
-        $this->SetAlpha(1);
-        $this->Image('images/' . BaseController::TOURNAMENT_SHORT_NAME . 'DiplomaHeader.png', 0, 0);
+        $this->Image('images/Diploma_background.png', 0, 0);
     }
 
     function FooterDiploma($tournamentDate)
     {
         $this->SetX(3);
-        $this->SetAlpha(0.6);
-        $this->SetFont('Gotham', '', 12);
+        $this->SetAlpha(0.4);
+        $this->SetFont('Barlow', '', 10);
         $this->SetTextColor(0);
 
         //DONAR SITE
-        $this->Text(5, 145, BaseController::TOURNAMENT_WEBSITE_URL);
-
-        //TOURNAMENT SITE
-        $this->Image(
-            BaseController::TOURNAMENT_WEBSITE_URL . '/uploads/sponsors/ca64ecbb4276c8583d9eac5b142c5062839663cf_groot.gif',
-            150,
-            130,
-            0,
-            15
-        );
+        $this->Text(3, 145, strtoupper(BaseController::TOURNAMENT_WEBSITE_URL));
 
         //DATUM
-        $this->Text(85, 145, '- ' . utf8_decode($tournamentDate) . ' -');
+        $this->Text(183, 145, strtoupper(utf8_decode($tournamentDate)));
+        $this->SetAlpha(1);
     }
 
     function ContentDiploma($turnster)
     {
+        //MARGINS
+        $this->SetMargins(0,0,0);
+
+        //NAAM TURNSTER
+        $this->SetFontSize(28);
+        $this->SetTextColor(245,36,142);
+        $this->Text(10,17,utf8_decode($turnster['naam']));
+
         $this->SetFontSize(20);
+
+        //NIVEAU TURNSTER
+        $this->SetFontSize(20);
+        $this->SetTextColor(95,99,253);
+        $this->Text(10,30,strtoupper(utf8_decode($turnster['categorie']) . ' ' . utf8_decode($turnster['niveau'])));
+
+        //VERENIGING TURNSTER
+        $this->Text(10,40,strtoupper(utf8_decode($turnster['vereniging'])));
+
+        //FILL & TEXT COLOR
+        $this->SetFillColor(95,99,253);
+        $this->SetTextColor(255,255,255);
+        $this->SetFontSize(18);
+        $this->Ln(50);
 
         //SPRONG
-
-        //ACHTERGROND
-        $this->SetDrawColor(255, 255, 0);
-        $this->SetFillColor(255, 255, 0);
-        $this->SetAlpha(0.5);
-        $this->RoundedRect(7, 55, 70, 10, 2, 'F');
-        $this->SetAlpha(1);
-
-        //TEKST
-        $this->Text(9.5, 62.5, 'Sprong');
-
-        //LIJNTJE
-        $this->SetFillColor(0);
-        $this->Rect(45, 62.5, 25, .25, 'F');
+        $this->Cell(78,10,'SPRONG  ',0,0,'R','F');   //SPATIE OPZETTELIJK
+        $this->Cell(7,10,'','',0,'');
+        $this->Cell(40,10,'','B',1);
+        $this->Cell(10,6,'',0,1);
 
         //BRUG
-
-        //ACHTERGROND
-        $this->SetDrawColor(255, 255, 0);
-        $this->SetFillColor(255, 255, 0);
-        $this->SetAlpha(0.5);
-        $this->RoundedRect(7, 73, 70, 10, 2, 'F');
-        $this->SetAlpha(1);
-
-        //TEKST
-        $this->Text(9.5, 80.5, 'Brug');
-
-        //LIJNTJE
-        $this->SetFillColor(0);
-        $this->Rect(45, 80.5, 25, .25, 'F');
+        $this->Cell(78,10,'BRUG  ',0,0,'R','F');   //SPATIE OPZETTELIJK
+        $this->Cell(7,10,'','',0,'');
+        $this->Cell(40,10,'','B',1);
+        $this->Cell(10,6,'',0,1);
 
         //BALK
-
-        //ACHTERGROND
-        $this->SetDrawColor(255, 255, 0);
-        $this->SetFillColor(255, 255, 0);
-        $this->SetAlpha(0.5);
-        $this->RoundedRect(7, 91, 70, 10, 2, 'F');
-        $this->SetAlpha(1);
-
-        //TEKST
-        $this->Text(9.5, 98.5, 'Balk');
-
-        //LIJNTJE
-        $this->SetFillColor(0);
-        $this->Rect(45, 98.5, 25, .25, 'F');
+        $this->Cell(78,10,'BALK  ',0,0,'R','F');   //SPATIE OPZETTELIJK
+        $this->Cell(7,10,'','',0,'');
+        $this->Cell(40,10,'','B',1);
+        $this->Cell(10,6,'',0,1);
 
         //VLOER
-
-        //ACHTERGROND
-        $this->SetDrawColor(255, 255, 0);
-        $this->SetFillColor(255, 255, 0);
-        $this->SetAlpha(0.5);
-        $this->RoundedRect(7, 109, 70, 10, 2, 'F');
-        $this->SetAlpha(1);
-
-        //TEKST
-        $this->Text(9.5, 116.5, 'Vloer');
-
-        //LIJNTJE
-        $this->SetFillColor(0);
-        $this->Rect(45, 116.5, 25, .25, 'F');
+        $this->Cell(78,10,'VLOER  ',0,0,'R','F');   //SPATIE OPZETTELIJK
+        $this->Cell(7,10,'','',0,'');
+        $this->Cell(40,10,'','B',1);
+        $this->Cell(10,6,'',0,1);
 
         //TOTAAL
-
-        //ACHTERGROND
-        $this->SetDrawColor(255, 255, 0);
-        $this->SetFillColor(255, 255, 0);
-        $this->SetAlpha(0.5);
-        $this->RoundedRect(107, 109, 70, 10, 2, 'F');
-        $this->SetAlpha(1);
-
-        //TEKST
-        $this->Text(109.5, 116.5, 'Totaal');
-
-        //LIJNTJE
-        $this->SetFillColor(0);
-        $this->Rect(145, 116.5, 25, .25, 'F');
-
-        //NAAM, VERENIGING, CATEGORIE EN NIVEAU
-
-        //NAAM
-        //FILL
-        $this->Ln(70.5);
-        $this->Cell(107, 2, '');
-
-        //TEKST
-        $this->SetFontSize(20);
-        $this->Cell(70, 0, utf8_decode($turnster['naam']), 0, 1, 'C');
-
-        //VERENIGING
-        //FILL
-        $this->Ln(10);
-        $this->Cell(107, 2, '');
-
-        //TEKST
-        $this->SetFontSize(16);
-        $this->Cell(70, 0, utf8_decode($turnster['vereniging']), 0, 1, 'C');
-
-        //CATEGORIE EN NIVEAU
-        //FILL
-        $this->Ln(7);
-        $this->Cell(107, 2, '');
-
-        //TEKST
-        $this->SetFontSize(16);
-        $this->Cell(70, 0, utf8_decode($turnster['categorie']) . ' ' . utf8_decode($turnster['niveau']), 0, 1, 'C');
+        $this->SetFillColor(245,36,142);
+        $this->Cell(78,10,'TOTAAL  ',0,0,'R','F');   //SPATIE OPZETTELIJK
+        $this->Cell(7,10,'','',0,'');
+        $this->Cell(40,10,'','B',1);
 
         //SPONSORS
         //FILL
@@ -161,31 +88,20 @@ class DiplomaPdfController extends AlphaPDFController
 
     function Wedstrijdnummer($turnster)
     {
-        $this->SetFont('Helvetica', '', 20);
+        $this->AddFont('OpenSans', '', 'OpenSans-Light.php');
+        $this->AddFont('Barlow', '', 'Barlow-Regular.php');
+        $this->Image('images/Wedstrijdnummer_background.png',0,0);
+
+        $this->SetFont('Barlow', '', 20);
+        $this->SetTextColor(255,255,255);
         $this->Ln(15);
         $this->Cell(210, 15, utf8_decode($turnster['vereniging']), 0, 1, "C");
         $this->Ln(16);
-        $this->SetFont('Helvetica', '', 200);
+        $this->SetFontSize(200);
         $this->Cell(210, 62, utf8_decode($turnster['wedstrijdnummer']), 0, 1, "C");
         $this->Ln(10);
-        $this->SetFont('Helvetica', '', 20);
+        $this->SetFontSize(20);
         $this->Cell(210, 10, utf8_decode($turnster['naam']), 0, 0, "C");
-
-        //IMAGES
-        $this->Image(
-            BaseController::TOURNAMENT_WEBSITE_URL . '/uploads/sponsors/9db8eb6e16a55cf34fd6ccb6edd3ce76dac79747_groot.png',
-            22,
-            114,
-            0,
-            30
-        );
-        $this->Image(
-            BaseController::TOURNAMENT_WEBSITE_URL . '/uploads/sponsors/9fc2ed362cf8b06300477066fe8c675f15c0ea19_groot.jpg',
-            150,
-            127,
-            0,
-            14
-        );
     }
 
     //ROUNDED RECTANGLE
