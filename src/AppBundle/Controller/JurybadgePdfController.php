@@ -17,10 +17,10 @@ class JurybadgePdfController extends AlphaPDFController
     function Header()
     {
         //BACKGROUND
-        $this->Image('images/JuryBadge_background.png', 0, 0);    //BACKGROUND2: 0,45		BACKGROUND3: 17,77
+        $this->Image('images/JuryBadge_background.png', 0, 0,53.98);
 
         //LOGO
-        $this->Image('images/JuryBadge_logo.png', 13, 0);
+        $this->Image('images/JuryBadge_logo.png', 13, 0,31);
     }
 
     function Footer()

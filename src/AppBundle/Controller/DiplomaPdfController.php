@@ -7,7 +7,7 @@ class DiplomaPdfController extends AlphaPDFController
     function HeaderDiploma()
     {
         //BACKGROUND
-        $this->Image('images/Diploma_background.png', 0, 0);
+        $this->Image('images/Diploma_background.png', 0, 0, 210);
     }
 
     function FooterDiploma($tournamentDate)
