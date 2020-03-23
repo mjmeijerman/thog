@@ -163,7 +163,7 @@ class ContentController extends BaseController
                 'aantalPlekken'       => $aantalPlekken,
                 'tijdVol'             => $tijdVol,
                 'tijdTotVol'          => $tijdTotVol,
-                'inschrijvingGeopend' => $this->isAfterOpeningInschrijving(),
+                'inschrijvingGeopend' => $this->inschrijvingToegestaan(),
             )
         );
     }
