@@ -5,7 +5,9 @@
         <a href="{{ path('addNieuwsPage') }}">Nieuw nieuwsbericht plaatsen:<img src="{{ asset('images/add.png') }}"
                                                                                 width="18px"/></a>
     {% endif %}
-    <div id="inschrijven"><a href="{{ path('inschrijven') }}">Inschrijven &#187;</a></div>
+    {% if inschrijvingGeopend %}
+        <div id="inschrijven"><a href="{{ path('inschrijven') }}">Inschrijven &#187;</a></div>
+    {% endif %}
     <h1>Laatste nieuws</h1>
     {% if aantalPlekken > -1 and inschrijvingGeopend %}
         <p>Er zijn nog plekken beschikbaar!</p>
