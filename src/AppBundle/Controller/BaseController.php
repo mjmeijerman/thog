@@ -579,7 +579,7 @@ class BaseController extends Controller
         }
 
         foreach ($this->menuItems as &$menuItem) {
-            if(is_array($menuItem)) {
+            if (is_array($menuItem)) {
                 if (isset($menuItem['submenuItems'])) {
                     foreach ($menuItem['submenuItems'] as &$submenuItem) {
                         if ($submenuItem['naam'] === 'Live scores' || $submenuItem['naam'] === 'Uitslagen') {
@@ -787,8 +787,8 @@ class BaseController extends Controller
 
     protected function sendEmail($subject, $to, $view, array $parameters = array(), $from = BaseController::TOURNAMENT_CONTACT_EMAIL)
     {
-        $message = Swift_Message::newInstance()
-            ->setSubject($subject)
+        $message = new Swift_Message();
+        $message->setSubject($subject)
             ->setFrom($from)
             ->setTo($to)
             ->setBody(
@@ -1144,21 +1144,21 @@ class BaseController extends Controller
 
                 //FACTUURDATUM & FACTUURNUMMER
                 $pdf->SetFont('Roboto', '', 14);
-                $pdf->SetTextColor(245,36,142);
+                $pdf->SetTextColor(245, 36, 142);
                 $pdf->SetAlpha(1);
-                $pdf->Text(20,75, 'FACTUURDATUM');
-                $pdf->Text(20,81, 'FACTUURNUMMER');
+                $pdf->Text(20, 75, 'FACTUURDATUM');
+                $pdf->Text(20, 81, 'FACTUURNUMMER');
 
                 $datumFactuur = $this->getOrganisatieInstellingen(self::FACTUUR_BEKIJKEN_TOEGESTAAN);
                 $pdf->SetTextColor(0);
-                $pdf->Text(68,75,date('d-m-Y',strtotime($datumFactuur[self::FACTUUR_BEKIJKEN_TOEGESTAAN])));
-                $pdf->Text(68,81,$factuurNummer);
+                $pdf->Text(68, 75, date('d-m-Y', strtotime($datumFactuur[self::FACTUUR_BEKIJKEN_TOEGESTAAN])));
+                $pdf->Text(68, 81, $factuurNummer);
 
                 //CONTACTPERSOON & VERENIGING
                 $pdf->SetFontSize(16);
-                $pdf->SetTextColor(245,36,142);
+                $pdf->SetTextColor(245, 36, 142);
                 $pdf->Text(20, 94, strtoupper($user->getVoornaam()) . ' ' . strtoupper($user->getAchternaam()));
-                $pdf->Text(20,101,$user->getVereniging()->getNaam() . ' ' . $user->getVereniging()->getPlaats());
+                $pdf->Text(20, 101, $user->getVereniging()->getNaam() . ' ' . $user->getVereniging()->getPlaats());
 
                 $pdf->SetTextColor(0);
 
@@ -1167,37 +1167,37 @@ class BaseController extends Controller
 
                 //FACTUURTABEL
                 //EERSTE RIJ - HEADERS
-                $pdf->SetFillColor(245,36,142);
+                $pdf->SetFillColor(245, 36, 142);
                 $pdf->SetTextColor(255);
                 $pdf->Cell(20, 0);        //Blank space
                 $pdf->SetFont('Roboto', '', 14);
-                $pdf->Cell(21, 8, 'AANTAL',0,0,'C',1);
-                $pdf->Cell(97, 8, ' BESCHRIJVING',0,0,'',1); //De spatie voor OMSCHRIJVING hoort daar!
-                $pdf->Cell(17, 8,'PRIJS',0,0,'R',1);        //Blank space
-                $pdf->Cell(25, 8, 'BEDRAG',0,0,'R',1);
-                $pdf->Cell(3,8,'',0,1,'',1);
+                $pdf->Cell(21, 8, 'AANTAL', 0, 0, 'C', 1);
+                $pdf->Cell(97, 8, ' BESCHRIJVING', 0, 0, '', 1); //De spatie voor OMSCHRIJVING hoort daar!
+                $pdf->Cell(17, 8, 'PRIJS', 0, 0, 'R', 1);        //Blank space
+                $pdf->Cell(25, 8, 'BEDRAG', 0, 0, 'R', 1);
+                $pdf->Cell(3, 8, '', 0, 1, '', 1);
 
                 $pdf->SetTextColor(0);
 
                 //TWEEDE RIJ - TURNSTERS
-                $pdf->SetFont('OpenSans','',11);
+                $pdf->SetFont('OpenSans', '', 11);
                 $pdf->Cell(22, 8);        //Blank space
                 $pdf->Cell(21, 8, $turnstersAantal, 0, 0, 'C');
                 $pdf->Cell(95, 8, 'Deelnemende turnsters');
-                $pdf->Cell(17, 8, EURO.$bedragPerTurnster,0,0,'R');        //Blank space
-                $pdf->Cell(25, 8, EURO.($turnstersAantal * $bedragPerTurnster), 0, 1, 'R');
+                $pdf->Cell(17, 8, EURO . $bedragPerTurnster, 0, 0, 'R');        //Blank space
+                $pdf->Cell(25, 8, EURO . ($turnstersAantal * $bedragPerTurnster), 0, 1, 'R');
                 //DERDE RIJ - AFGEMELDE TURNSTERS
                 $pdf->Cell(22, 8);        //Blank space
                 $pdf->Cell(21, 8, $turnstersAfgemeldAantal, 0, 0, 'C');
                 $pdf->Cell(95, 8, 'Afgemelde turnsters na sluiting inschrijving');
-                $pdf->Cell(17, 8, EURO.$bedragPerTurnster,0,0,'R');        //Blank space
-                $pdf->Cell(25, 8, EURO.($turnstersAfgemeldAantal * $bedragPerTurnster), 0, 1, 'R');
+                $pdf->Cell(17, 8, EURO . $bedragPerTurnster, 0, 0, 'R');        //Blank space
+                $pdf->Cell(25, 8, EURO . ($turnstersAfgemeldAantal * $bedragPerTurnster), 0, 1, 'R');
                 //VIERDE RIJ - JURYLEDEN TEKORT
                 $pdf->Cell(22, 8);        //Blank space
                 $pdf->Cell(21, 8, $juryTekort, 0, 0, 'C');
                 $pdf->Cell(95, 8, 'Tekort aan juryleden');
-                $pdf->Cell(17, 8, EURO.$juryBoeteBedrag,0,0,'R');        //Blank space
-                $pdf->Cell(25, 8, EURO.($juryTekort * $juryBoeteBedrag), 0, 1, 'R');
+                $pdf->Cell(17, 8, EURO . $juryBoeteBedrag, 0, 0, 'R');        //Blank space
+                $pdf->Cell(25, 8, EURO . ($juryTekort * $juryBoeteBedrag), 0, 1, 'R');
 
                 //VIJFDE RIJ - ARRANGEMENT ZATERDAG
                 /*$pdf->Cell(22, 0);        //Blank space
@@ -1212,9 +1212,9 @@ class BaseController extends Controller
                 $pdf->SetFont('Roboto', '', 14);
                 $pdf->SetTextColor(255);
                 $pdf->Cell(135); //Blank space
-                $pdf->Cell(20,8,'TOTAAL',0,0,'R',1);
-                $pdf->Cell(25, 8, EURO.$teBetalenBedrag, 0, 0, 'R',1);
-                $pdf->Cell(3,8,'',0,1,'',1);
+                $pdf->Cell(20, 8, 'TOTAAL', 0, 0, 'R', 1);
+                $pdf->Cell(25, 8, EURO . $teBetalenBedrag, 0, 0, 'R', 1);
+                $pdf->Cell(3, 8, '', 0, 1, '', 1);
 
                 //COLOR BACK TO BLACK
                 $pdf->SetFillColor(0);
@@ -1226,41 +1226,58 @@ class BaseController extends Controller
                 //BETAALDETAILS ZINNETJE
                 $uitersteBetaalDatum = $this->getOrganisatieInstellingen(self::UITERLIJKE_BETAALDATUM_FACTUUR);
 
-                $pdf->SetFont('OpenSans','',11);
+                $pdf->SetFont('OpenSans', '', 11);
                 $pdf->Cell(20);
-                $pdf->Cell(0,6,'Wij verzoeken u vriendelijk het bovenstaande bedrag voor '.date('d-m-Y',strtotime($uitersteBetaalDatum[self::UITERLIJKE_BETAALDATUM_FACTUUR])).' over te maken naar',0,1);
+                $pdf->Cell(
+                    0,
+                    6,
+                    'Wij verzoeken u vriendelijk het bovenstaande bedrag voor ' . date(
+                        'd-m-Y',
+                        strtotime(
+                            $uitersteBetaalDatum[self::UITERLIJKE_BETAALDATUM_FACTUUR]
+                        )
+                    ) . ' over te maken naar',
+                    0,
+                    1
+                );
                 $pdf->Cell(20);
-                $pdf->Cell(0,6,'onze bankrekening:',0,1);
+                $pdf->Cell(0, 6, 'onze bankrekening:', 0, 1);
 
                 $pdf->Ln(3);
 
                 //BETAALDETAILS
                 $pdf->Cell(20);
-                $pdf->SetFont('Roboto-R','',11);
-                $pdf->Cell(15,6,'IBAN',0,0);
-                $pdf->SetFont('OpenSans','',11);
-                $pdf->Cell(20,6,$rekeningNummer,0,1);
+                $pdf->SetFont('Roboto-R', '', 11);
+                $pdf->Cell(15, 6, 'IBAN', 0, 0);
+                $pdf->SetFont('OpenSans', '', 11);
+                $pdf->Cell(20, 6, $rekeningNummer, 0, 1);
 
                 $pdf->Cell(20);
-                $pdf->SetFont('Roboto-R','',11);
-                $pdf->Cell(15,6,'T.N.V.',0,0);
-                $pdf->SetFont('OpenSans','',11);
-                $pdf->Cell(20,6,$rekeningTNV,0,1);
+                $pdf->SetFont('Roboto-R', '', 11);
+                $pdf->Cell(15, 6, 'T.N.V.', 0, 0);
+                $pdf->SetFont('OpenSans', '', 11);
+                $pdf->Cell(20, 6, $rekeningTNV, 0, 1);
 
                 $pdf->Cell(20);
-                $pdf->SetFont('Roboto-R','',11);
-                $pdf->Cell(15,6,'O.V.V.',0,0);
-                $pdf->SetFont('OpenSans','',11);
-                $pdf->Cell(20,6,$factuurNummer,0,1);
+                $pdf->SetFont('Roboto-R', '', 11);
+                $pdf->Cell(15, 6, 'O.V.V.', 0, 0);
+                $pdf->SetFont('OpenSans', '', 11);
+                $pdf->Cell(20, 6, $factuurNummer, 0, 1);
 
                 //LINEBREAK
                 $pdf->Ln(3);
 
                 //AFSLUITING
                 $pdf->Cell(20);
-                $pdf->Cell(0,6,'Let op! Uw inschrijving is pas definitief zodra uw betaling is ontvangen.',0,1);
+                $pdf->Cell(0, 6, 'Let op! Uw inschrijving is pas definitief zodra uw betaling is ontvangen.', 0, 1);
                 $pdf->Cell(20);
-                $pdf->Cell(0,6,'Mochten er zich problemen voordoen, neemt u dan alstublieft contact op via info@thog.nl',0,0);
+                $pdf->Cell(
+                    0,
+                    6,
+                    'Mochten er zich problemen voordoen, neemt u dan alstublieft contact op via info@thog.nl',
+                    0,
+                    0
+                );
 
                 return new BinaryFileResponse(
                     $pdf->Output(), 200, array(
