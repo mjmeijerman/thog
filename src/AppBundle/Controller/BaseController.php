@@ -40,11 +40,11 @@ class BaseController extends Controller
     const UITERLIJKE_BETAALDATUM_FACTUUR  = 'Uiterlijke betaaldatum';
     const MAX_AANTAL_TURNSTERS            = 'Max aantal turnsters';
     const EMPTY_RESULT                    = 'Klik om te wijzigen';
-    const BEDRAG_PER_TURNSTER             = 20.00;
+    const BEDRAG_PER_TURNSTER             = 30.00;
     const JURY_BOETE_BEDRAG               = 100;
     const AANTAL_TURNSTERS_PER_JURY       = 10;
-    const DATE_TOURNAMENT                 = '4 & 5 juli 2020';
-    const LOCATION_TOURNAMENT             = 'Sporthal Overbosch';
+    const DATE_TOURNAMENT                 = '3 & 4 juli 2021';
+    const LOCATION_TOURNAMENT             = 'Sportcampus Zuiderpark';
     const REKENINGNUMMER                  = 'NL51 INGB 000 650 00 42';
     const REKENING_TNV                    = 'Gymnastiekvereniging Donar';
 
@@ -319,9 +319,9 @@ class BaseController extends Controller
             return 'Pupil 2';
         } elseif ($leeftijd == 12) {
             return 'Jeugd 1';
-        } elseif ($leeftijd == 13) {
+        } elseif ($leeftijd == 13 || $leeftijd == 14) {
             return 'Jeugd 2';
-        } elseif ($leeftijd == 14 || $leeftijd == 15) {
+        } elseif ($leeftijd == 15 || $leeftijd == 16) {
             return 'Junior';
         } else {
             return 'Senior';
@@ -348,12 +348,12 @@ class BaseController extends Controller
             case 'Jeugd 1':
                 return date('Y', time()) - 12;
             case 'Jeugd 2':
-                return date('Y', time()) - 13;
+                return [date('Y', time()) - 13, date('Y', time()) - 14];
             case 'Junior':
-                return [date('Y', time()) - 14, date('Y', time()) - 15];
+                return [date('Y', time()) - 15, date('Y', time()) - 16];
             case 'Senior':
                 $geboortejaren = [];
-                for ($i = 16; $i < 60; $i++) {
+                for ($i = 17; $i < 60; $i++) {
                     $geboortejaren[] = date('Y', time()) - $i;
                 }
                 return $geboortejaren;
